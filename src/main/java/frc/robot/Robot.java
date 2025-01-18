@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.driveStraight;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.buttonCommandTest;
 
 public class Robot extends TimedRobot {
@@ -57,6 +59,8 @@ public class Robot extends TimedRobot {
 
   private String m_autoSelected;
   private final SendableChooser<String> m_AutoChooser = new SendableChooser<>();
+
+  private final LEDSubsystem ledSystem = new LEDSubsystem();
 
   @Override
   public void robotInit() {
@@ -89,9 +93,7 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    }
-
-    
+    }    
   }
 
   @Override
@@ -108,7 +110,10 @@ public class Robot extends TimedRobot {
     //Button Triggers
     yButton.onFalse(new DriveDistance(.1, bCmdTest));
     xButton.onTrue(bCmdTest.buttonTest2());
-    mode.onTrue(toggleJoystick());
+    mode.onTrue(toggleJoystick().alongWith(ledSystem.runPattern(LEDPattern.rainbow(255, 128))));
+
+    
+
   }
   
   @Override
