@@ -31,13 +31,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.driveStraight;
 import frc.robot.subsystems.buttonCommandTest;
 
 public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
   private Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
   private Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
-  //private final Joystick m_joystick = new Joystick(2);
+  private final Joystick m_joystick = new Joystick(2);
+
+  private double[] driveInputs = {0,0,0};
+  private Trigger mode = new JoystickButton(m_controller, 7);
+  private boolean isJoystick = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
@@ -103,11 +108,14 @@ public class Robot extends TimedRobot {
     //Button Triggers
     yButton.onFalse(new DriveDistance(.1, bCmdTest));
     xButton.onTrue(bCmdTest.buttonTest2());
+    mode.onTrue(toggleJoystick());
   }
   
   @Override
   public void autonomousPeriodic() {
     //driveWithJoystick(false);
+    publishToDashboard();
+    m_swerve.publishToDashboard();
     m_swerve.updateOdometry();
 
     // Do this in either robot periodic or subsystem periodic
@@ -117,6 +125,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     publishToDashboard();
+    //m_swerve.publishToDashboard();
     driveWithJoystick(false);
     m_swerve.updateOdometry();
 
@@ -125,14 +134,24 @@ public class Robot extends TimedRobot {
 
 
 
+
   }
 
   public void driveWithJoystick(boolean fieldRelative) {
     
+    if (isJoystick) {
+        driveInputs[0] = m_joystick.getX();
+        driveInputs[1] = m_joystick.getY();
+        driveInputs[2]= m_joystick.getZ();
+    } else {
+        driveInputs[0] = m_controller.getLeftX();
+        driveInputs[1] = m_controller.getLeftY();
+        driveInputs[2] = m_controller.getRightX();
+    }
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[1], 0.1))
             * Constants.kMaxRobotSpeed;
     //final var xSpeed =
     //    -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getY(), 0.1))
@@ -143,7 +162,7 @@ public class Robot extends TimedRobot {
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[0], 0.1))
             * Constants.kMaxRobotSpeed;
     //final var ySpeed =
     //    -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getX(), 0.1))
@@ -155,13 +174,13 @@ public class Robot extends TimedRobot {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(driveInputs[2], 0.1))
             * Constants.kMaxRobotAngularSpeed;
     //final var rot =
     //    -m_rotLimiter.calculate(MathUtil.applyDeadband(m_joystick.getZ(), 0.2))
     //        * Constants.kMaxRobotAngularSpeed;
     SmartDashboard.putNumber("rot", rot);
-
+  
   
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());    
   }
@@ -173,6 +192,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller Left Y", m_controller.getLeftY());
     SmartDashboard.putNumber("Controller Right X", m_controller.getRightX());
     SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getAngle());
+    SmartDashboard.putBoolean("Joystick Enabled", isJoystick);
+
   }
 
 
@@ -196,7 +217,7 @@ public class Robot extends TimedRobot {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(.10, 0)),
+        List.of(new Translation2d(.75, 0)),
         // End 1.5 meters straight ahead of where we started, facing forward
         new Pose2d(1.5, 0, new Rotation2d(0)),
         fwdconfig);
@@ -209,6 +230,15 @@ public class Robot extends TimedRobot {
         // End 1.5 meters straight ahead of where we started, facing forward
         new Pose2d(-1.5, 0, new Rotation2d(0)),
         backconfig);
+
+        Trajectory leftTraj = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(0, .75)),
+          // End 1.5 meters straight ahead of where we started, facing forward
+          new Pose2d(0,1.5, new Rotation2d(0)),
+          backconfig);
 
     Trajectory conTrajectory = fwdTraj.concatenate(backTraj);
 
@@ -239,19 +269,39 @@ public class Robot extends TimedRobot {
         thetaController,
         m_swerve::setModuleStates,
         m_swerve);
-  
 
+        SwerveControllerCommand swerveControllerCommandLeft = 
+        new SwerveControllerCommand(
+          leftTraj,
+          m_swerve::getPose,
+          m_swerve.m_kinematics,
+          // Position controllers
+          new PIDController(AutoConstants.kPXController, 0, 0),
+          new PIDController(AutoConstants.kPYController, 0, 0),
+          thetaController,
+          m_swerve::setModuleStates,
+          m_swerve);
+  
+        driveStraight driveStraightComman =
+        new driveStraight(0.3, getPeriod(), m_swerve);
+        
         // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
     return Commands.sequence(
         new InstantCommand(() -> m_swerve.resetOdometry(backTraj.getInitialPose())),
         new InstantCommand(() -> System.out.println("Command 1:")),
-        swerveControllerCommand1,
+        driveStraightComman,
         new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
         new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
-        swerveControllerCommand2,
+        //swerveControllerCommandLeft,
         new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
         new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
         new InstantCommand(() -> System.out.println("Done !")));
   }
+  public Command toggleJoystick() {
+    return Commands.sequence(
+        new InstantCommand(() -> isJoystick=!isJoystick)
+    );
+}
+
 }

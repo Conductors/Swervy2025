@@ -94,59 +94,13 @@ public class Drivetrain extends SubsystemBase {
       swerveModuleStates[3].angle.getDegrees(),
       swerveModuleStates[3].speedMetersPerSecond
     };
-
-    double[] moduleOptDesStates = {
-      m_frontLeft.getOptState().angle.getRadians(),
-      m_frontLeft.getOptState().speedMetersPerSecond,
-      m_frontRight.getOptState().angle.getRadians(),
-      m_frontRight.getOptState().speedMetersPerSecond,
-      m_backLeft.getOptState().angle.getRadians(),
-      m_backLeft.getOptState().speedMetersPerSecond,
-      m_backRight.getOptState().angle.getRadians(),
-      m_backRight.getOptState().speedMetersPerSecond
-    };
-
-    double[] moduleActualStates = {
-      m_frontLeft.getState().angle.getDegrees(),
-      m_frontLeft.getState().speedMetersPerSecond,
-      m_frontRight.getState().angle.getDegrees(),
-      m_frontRight.getState().speedMetersPerSecond,
-      m_backLeft.getState().angle.getDegrees(),
-      m_backLeft.getState().speedMetersPerSecond,
-      m_backRight.getState().angle.getDegrees(),
-      m_backRight.getState().speedMetersPerSecond
-    };
-
+    publishToDashboard();
     SmartDashboard.putNumberArray("DesiredStates", moduleDesiredStates);
-    SmartDashboard.putNumberArray("ActualStates", moduleActualStates);
-    SmartDashboard.putNumberArray("OptDesiredStates", moduleOptDesStates);
-    SmartDashboard.putNumber("FL_adj_Position", m_frontLeft.getAdjustedAngle());
-    SmartDashboard.putNumber("FR_adj_Position", m_frontRight.getAdjustedAngle());
-    SmartDashboard.putNumber("BL_adj_Position", m_backLeft.getAdjustedAngle());
-    SmartDashboard.putNumber("BR_adj_Position", m_backRight.getAdjustedAngle());
-    SmartDashboard.putNumber("FL_abs_Position", m_frontLeft.getAbsAngle());
-    SmartDashboard.putNumber("FR_abs_Position", m_frontRight.getAbsAngle());
-    SmartDashboard.putNumber("BL_abs_Position", m_backLeft.getAbsAngle());
-    SmartDashboard.putNumber("BR_abs_Position", m_backRight.getAbsAngle());
     SmartDashboard.putNumber("FL_Desired_Angle", swerveModuleStates[0].angle.getRadians());
     SmartDashboard.putNumber("FR_Desired_Angle", swerveModuleStates[1].angle.getRadians());
     SmartDashboard.putNumber("BL_Desired_Angle", swerveModuleStates[2].angle.getRadians());
     SmartDashboard.putNumber("BR_Desired_Angle", swerveModuleStates[3].angle.getRadians());
 
-    SmartDashboard.putNumberArray("FL Actual V", m_frontLeft.getActualMotorVoltageData());
-    SmartDashboard.putNumberArray("FR Actual V", m_frontRight.getActualMotorVoltageData());
-    SmartDashboard.putNumberArray("BL Actual V", m_backLeft.getActualMotorVoltageData());
-    SmartDashboard.putNumberArray("BR Actual V", m_backLeft.getActualMotorVoltageData());
-
-    SmartDashboard.putNumberArray("FL Command", m_frontLeft.getMotorVoltageData());
-    SmartDashboard.putNumberArray("FR Command", m_frontRight.getMotorVoltageData());
-    SmartDashboard.putNumberArray("BL Command", m_backLeft.getMotorVoltageData());
-    SmartDashboard.putNumberArray("BR Command", m_backRight.getMotorVoltageData());
-
-    SmartDashboard.putNumber("FL Position", m_frontLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("FR Position", m_frontRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("BL Position", m_backLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("BR Position", m_backRight.getPosition().distanceMeters);
 
   }
 
@@ -194,6 +148,59 @@ public class Drivetrain extends SubsystemBase {
           m_backRight.getPosition()
         },
         pose);
+  }
+
+  public void publishToDashboard() {
+
+    
+    double[] moduleOptDesStates = {
+      m_frontLeft.getOptState().angle.getRadians(),
+      m_frontLeft.getOptState().speedMetersPerSecond,
+      m_frontRight.getOptState().angle.getRadians(),
+      m_frontRight.getOptState().speedMetersPerSecond,
+      m_backLeft.getOptState().angle.getRadians(),
+      m_backLeft.getOptState().speedMetersPerSecond,
+      m_backRight.getOptState().angle.getRadians(),
+      m_backRight.getOptState().speedMetersPerSecond
+    };
+
+    double[] moduleActualStates = {
+      m_frontLeft.getState().angle.getDegrees(),
+      m_frontLeft.getState().speedMetersPerSecond,
+      m_frontRight.getState().angle.getDegrees(),
+      m_frontRight.getState().speedMetersPerSecond,
+      m_backLeft.getState().angle.getDegrees(),
+      m_backLeft.getState().speedMetersPerSecond,
+      m_backRight.getState().angle.getDegrees(),
+      m_backRight.getState().speedMetersPerSecond
+    };
+
+    SmartDashboard.putNumberArray("ActualStates", moduleActualStates);
+    SmartDashboard.putNumberArray("OptDesiredStates", moduleOptDesStates);
+    SmartDashboard.putNumber("FL_adj_Position", m_frontLeft.getAdjustedAngle());
+    SmartDashboard.putNumber("FR_adj_Position", m_frontRight.getAdjustedAngle());
+    SmartDashboard.putNumber("BL_adj_Position", m_backLeft.getAdjustedAngle());
+    SmartDashboard.putNumber("BR_adj_Position", m_backRight.getAdjustedAngle());
+    SmartDashboard.putNumber("FL_abs_Position", m_frontLeft.getAbsAngle());
+    SmartDashboard.putNumber("FR_abs_Position", m_frontRight.getAbsAngle());
+    SmartDashboard.putNumber("BL_abs_Position", m_backLeft.getAbsAngle());
+    SmartDashboard.putNumber("BR_abs_Position", m_backRight.getAbsAngle());
+
+
+    SmartDashboard.putNumberArray("FL Actual V", m_frontLeft.getActualMotorVoltageData());
+    SmartDashboard.putNumberArray("FR Actual V", m_frontRight.getActualMotorVoltageData());
+    SmartDashboard.putNumberArray("BL Actual V", m_backLeft.getActualMotorVoltageData());
+    SmartDashboard.putNumberArray("BR Actual V", m_backLeft.getActualMotorVoltageData());
+
+    SmartDashboard.putNumberArray("FL Command", m_frontLeft.getMotorVoltageData());
+    SmartDashboard.putNumberArray("FR Command", m_frontRight.getMotorVoltageData());
+    SmartDashboard.putNumberArray("BL Command", m_backLeft.getMotorVoltageData());
+    SmartDashboard.putNumberArray("BR Command", m_backRight.getMotorVoltageData());
+
+    SmartDashboard.putNumber("FL Position", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FR Position", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("BL Position", m_backLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("BR Position", m_backRight.getPosition().distanceMeters);
   }
 
 }

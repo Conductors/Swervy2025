@@ -39,7 +39,7 @@ public class SwerveModule {
   public double driveActMotorVoltage = 0;
   public double turnActMotorVoltage = 0;
 
-  public SwerveModuleState optState;
+  public SwerveModuleState optState = new SwerveModuleState();
 
   public double m_turningEncoderOffset = 0;
 
