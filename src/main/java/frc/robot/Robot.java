@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.commands.DriveDistance;
+import frc.robot.commands.exampleCommand;
 import frc.robot.commands.driveStraight;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.buttonCommandTest;
@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
   private Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
   private Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
+  private Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
   private final Joystick m_joystick = new Joystick(2);
 
   private double[] driveInputs = {0,0,0};
@@ -108,11 +109,14 @@ public class Robot extends TimedRobot {
     }
 
     //Button Triggers
-    yButton.onFalse(new DriveDistance(.1, bCmdTest));
+    yButton.onFalse(new exampleCommand(.1, bCmdTest));
     xButton.onTrue(bCmdTest.buttonTest2());
     mode.onTrue(toggleJoystick().alongWith(ledSystem.runPattern(LEDPattern.rainbow(255, 128))));
 
-    
+    //Pressing A button sends robot forward, releasing sends it back
+    aButton.onTrue(new driveStraight(.25, getPeriod(), m_swerve));
+    aButton.onFalse(new driveStraight(-.25, getPeriod(), m_swerve));
+
 
   }
   

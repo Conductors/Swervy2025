@@ -4,12 +4,11 @@
 
 package frc.robot.commands;
 
-import frc.robot.Drivetrain;
 import frc.robot.subsystems.buttonCommandTest;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class DriveDistance extends Command {
+public class exampleCommand extends Command {
   private buttonCommandTest l_ButtonCommandTest;
   private Timer m_timer = new Timer();
   private double m_timeout;
@@ -21,7 +20,7 @@ public class DriveDistance extends Command {
    * @param speed The speed at which the robot will drive
    * @param drive The drive subsystem on which this command will run
    */
-  public DriveDistance(double timeout, buttonCommandTest buttonCmdTest) {
+  public exampleCommand(double timeout, buttonCommandTest buttonCmdTest) {
     m_timer.reset();
     m_timeout = timeout;
     l_ButtonCommandTest = buttonCmdTest;
