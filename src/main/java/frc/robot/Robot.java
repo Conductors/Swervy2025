@@ -117,6 +117,7 @@ public class Robot extends TimedRobot {
     aButton.onTrue(new driveStraight(.25, getPeriod(), m_swerve));
     aButton.onFalse(new driveStraight(-.25, getPeriod(), m_swerve));
 
+    
 
   }
   
@@ -202,7 +203,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller Right X", m_controller.getRightX());
     SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getAngle());
     SmartDashboard.putBoolean("Joystick Enabled", isJoystick);
-
+    
   }
 
 
@@ -291,7 +292,7 @@ public class Robot extends TimedRobot {
           m_swerve::setModuleStates,
           m_swerve);
   
-        driveStraight driveStraightComman =
+        driveStraight driveStraightCommand =
         new driveStraight(0.3, getPeriod(), m_swerve);
         
         // Reset odometry to the initial pose of the trajectory, run path following
@@ -299,10 +300,10 @@ public class Robot extends TimedRobot {
     return Commands.sequence(
         new InstantCommand(() -> m_swerve.resetOdometry(backTraj.getInitialPose())),
         new InstantCommand(() -> System.out.println("Command 1:")),
-        driveStraightComman,
-        new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
-        new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
-        //swerveControllerCommandLeft,
+        //driveStraightCommand,
+        //new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
+        //new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
+        m_swerve.getPathPlannerCommand(),
         new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
         new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
         new InstantCommand(() -> System.out.println("Done !")));

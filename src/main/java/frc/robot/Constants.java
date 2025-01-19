@@ -3,6 +3,9 @@ package frc.robot;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public final class Constants {
+    //RoboRio Constants
+    public static final double kDefaultPeriod = 0.02; //50Hz
+
     //Drivetrain (whole robot) constants
     public static final double kMaxRobotSpeed = 3; // meters per second
     public static final double kMaxRobotAngularSpeed = Math.PI; // 1/2 rotation per second = Pi
