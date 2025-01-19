@@ -4,10 +4,15 @@
 
 package frc.robot;
 
+
+import com.pathplanner.lib.path.*;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +24,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
@@ -39,6 +47,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_backRight = new SwerveModule(17, 16, 
                                                     3, .334); 
 
+  private RobotConfig mRobotconfig;
 
   public final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
@@ -61,9 +70,15 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     m_gyro.reset();
-    pathPlannerSetup();
 
-    
+    configurePathPlanner();
+
+    //This EventTrigger is supposed to run when the PathPlanner path crosses a mid point
+    new EventTrigger("testEvent1").whileTrue(new InstantCommand(() -> System.out.println("PathPlanner Event Trigger")));
+
+
+    //Create a NamedCommand so that we can use this in the event tag
+    NamedCommands.registerCommand("testEvent1", new InstantCommand(() -> System.out.println("PathPlanner Named Command")));
   }
 
   /**
@@ -210,42 +225,64 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("BR Position", m_backRight.getPosition().distanceMeters);
   }
 
-  public void pathPlannerSetup() {
-    // Load the RobotConfig from the GUI settings. You should probably
-    // store this in your Constants file
-    RobotConfig config;
+  public ChassisSpeeds getRobotChassisSpeeds() {
+    return m_kinematics.toChassisSpeeds(        
+          m_frontLeft.getState(),
+          m_frontRight.getState(),
+          m_backLeft.getState(),
+          m_backRight.getState()
+      );
+  }
+
+  /**
+   *  DriveRobotRelative uses chassis speeds inputs to ddrive the robot relative to robot's orientation
+   * at a default period rate.
+   * @param speeds ChassisSpeeds object containing the vx, vy, and omega values
+   */
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+    drive(speeds.vxMetersPerSecond,
+          speeds.vyMetersPerSecond,
+          speeds.omegaRadiansPerSecond,
+          false,
+          Constants.kDefaultPeriod);
+  }
+
+  public void configurePathPlanner() {
+    // Load the RobotConfig from the GUI settings. You should probably store this in your Constants file
+    
     try{
-      config = RobotConfig.fromGUISettings();
+      mRobotconfig = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
-  
-    /*  ///WORK ON THIS SECTION BELOW TO GET PATH PLANNER WORKING
-    // Configure AutoBuilder last
+ 
     AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
+            this::getPose, 
+            this::resetOdometry,
+            this::getRobotChassisSpeeds,
+            this::driveRobotRelative,
+            new PPHolonomicDriveController( // Holonomic drive controller                                                 
+                        new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0)), // Rotation PID constants
+            mRobotconfig, 
             () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
+              return false; // Boolean supplier that controls when the path will be mirrored for the red alliance
             },
-            this // Reference to this subsystem to set requirements
-    );  
-  */
+            this);
+        
+
+  }
+  public Command getPathPlannerCommand() {
+    try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
   }
 }
