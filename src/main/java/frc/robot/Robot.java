@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.exampleCommand;
+import frc.robot.commands.driveSpinways;
 import frc.robot.commands.driveStraight;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.buttonCommandTest;
@@ -41,10 +42,12 @@ public class Robot extends TimedRobot {
   private Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
   private Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
   private Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
+  private Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
+  private Trigger mode = new JoystickButton(m_controller, 7);
+
   private final Joystick m_joystick = new Joystick(2);
 
-  private double[] driveInputs = {0,0,0};
-  private Trigger mode = new JoystickButton(m_controller, 7);
+  private double[] driveInputs = {0,0,0};  
   private boolean isJoystick = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
@@ -117,6 +120,8 @@ public class Robot extends TimedRobot {
     aButton.onTrue(new driveStraight(.25, getPeriod(), m_swerve));
     aButton.onFalse(new driveStraight(-.25, getPeriod(), m_swerve));
 
+    //Pressing B button spins the robot 90 degrees counter clockwise
+    bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
     
 
   }
@@ -162,10 +167,7 @@ public class Robot extends TimedRobot {
     // negative values when we push forward.
     final var xSpeed =
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[1], 0.1))
-            * Constants.kMaxRobotSpeed;
-    //final var xSpeed =
-    //    -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getY(), 0.1))
-    //        * Constants.kMaxRobotSpeed;
+          * Constants.kMaxRobotSpeed;
     SmartDashboard.putNumber("xSpeed", xSpeed);
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
@@ -173,10 +175,7 @@ public class Robot extends TimedRobot {
     // return positive values when you pull to the right by default.
     final var ySpeed =
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[0], 0.1))
-            * Constants.kMaxRobotSpeed;
-    //final var ySpeed =
-    //    -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_joystick.getX(), 0.1))
-    //        * Constants.kMaxRobotSpeed;
+          * Constants.kMaxRobotSpeed;
     SmartDashboard.putNumber("ySpeed", ySpeed);
 
     // Get the rate of angular rotation. We are inverting this because we want a
@@ -185,12 +184,8 @@ public class Robot extends TimedRobot {
     // the right by default.
     final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(driveInputs[2], 0.1))
-            * Constants.kMaxRobotAngularSpeed;
-    //final var rot =
-    //    -m_rotLimiter.calculate(MathUtil.applyDeadband(m_joystick.getZ(), 0.2))
-    //        * Constants.kMaxRobotAngularSpeed;
+          * Constants.kMaxRobotAngularSpeed;
     SmartDashboard.putNumber("rot", rot);
-  
   
     m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());    
   }
@@ -293,7 +288,7 @@ public class Robot extends TimedRobot {
           m_swerve);
   
         driveStraight driveStraightCommand =
-        new driveStraight(0.3, getPeriod(), m_swerve);
+          new driveStraight(0.3, getPeriod(), m_swerve);
         
         // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
@@ -308,6 +303,7 @@ public class Robot extends TimedRobot {
         new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
         new InstantCommand(() -> System.out.println("Done !")));
   }
+
   public Command toggleJoystick() {
     return Commands.sequence(
         new InstantCommand(() -> isJoystick=!isJoystick)
