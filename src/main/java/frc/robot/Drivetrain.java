@@ -261,8 +261,8 @@ public class Drivetrain extends SubsystemBase {
             this::getRobotChassisSpeeds,
             this::driveRobotRelative,
             new PPHolonomicDriveController( // Holonomic drive controller                                                 
-                        new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0)), // Rotation PID constants
+                        new PIDConstants(Constants.AutoConstants.kPP_PXController, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(Constants.AutoConstants.kPP_PThetaController, 0.0, 0.0)), // Rotation PID constants
             mRobotconfig, 
             () -> {
               return false; // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -274,7 +274,10 @@ public class Drivetrain extends SubsystemBase {
   public Command getPathPlannerCommand() {
     try{
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1");
+        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1"); //forward 1.5m, then stop
+        //PathPlannerPath path = PathPlannerPath.fromPathFile("fwd_left");    //forward 1.5m, the left 1.5m (heading stays 0 deg)
+        //PathPlannerPath path = PathPlannerPath.fromPathFile("spin_in_place");
+
 
         // Create a path following command using AutoBuilder. This will also trigger event markers.
         return AutoBuilder.followPath(path);
