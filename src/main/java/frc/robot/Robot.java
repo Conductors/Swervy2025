@@ -121,7 +121,8 @@ public class Robot extends TimedRobot {
     aButton.onFalse(new driveStraight(-.25, getPeriod(), m_swerve));
 
     //Pressing B button spins the robot 90 degrees counter clockwise
-    bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
+    //bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
+    bButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
     
 
   }
@@ -293,7 +294,7 @@ public class Robot extends TimedRobot {
         // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
     return Commands.sequence(
-        new InstantCommand(() -> m_swerve.resetOdometry(backTraj.getInitialPose())),
+        new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
         new InstantCommand(() -> System.out.println("Command 1:")),
         //driveStraightCommand,
         //new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
