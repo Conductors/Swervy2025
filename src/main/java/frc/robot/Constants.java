@@ -41,6 +41,17 @@ public final class Constants {
     public static final double kBR_TurnEncoderChannel = 3;
     public static final double kBR_TurnEncoderOffset = 0.336;
 
+    public static final double KpCrane = 1;
+    public static final double CraneMaxAccel = Math.PI;
+    public static final double CraneMaxVelocity = Math.PI;
+    public static final double WristMaxAccel = Math.PI;
+    public static final double WristMaxVelocity = Math.PI;
+    public static final double KpWrist = 1;
+
+    public static enum Position {
+        keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround
+    };
+
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 1;
         public static final double kMaxAccelerationMetersPerSecondSquared = 10;
@@ -51,7 +62,7 @@ public final class Constants {
         public static final double kPYController = 1.3;
         public static final double kPThetaController = 1;
     
-        public static final double kPP_PXController = 1.3;
+        public static final double kPP_PXController = 5;
         public static final double kPP_PYController = 1.3;
         public static final double kPP_PThetaController = 1;
 

@@ -25,7 +25,7 @@ private final ProfiledPIDController m_PIDController;
 */
   public driveStraightPID(double p_Distance, double p_Period, Drivetrain driveTrain) {
     m_direction = Math.signum(p_Distance);
-    m_distance = Math.abs(p_Distance);
+    m_distance = p_Distance;
     lDrivetrain = driveTrain;
     m_Period = p_Period;
     addRequirements(lDrivetrain);
