@@ -44,6 +44,8 @@ public class Robot extends TimedRobot {
   private Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
   private Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
   private Trigger mode = new JoystickButton(m_controller, 7);
+  public Trigger lbButton = new JoystickButton(m_controller, 5);
+
 
   private final Joystick m_joystick = new Joystick(2);
 
