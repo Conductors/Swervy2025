@@ -49,8 +49,42 @@ public final class Constants {
     public static final double KpWrist = 1;
 
     public static enum Position {
-        keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround
+        keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, kNumOfPosition       //must keep this order for setpoint arrays
     };
+
+    public static final class aGConstants {
+        public static final int k_CraneMotorPort = 0;
+        public static final int k_WristMotorPort = 0;
+        public static final int k_ClawMotorPort = 0;
+        public static final int k_CraneEncPort = 0;
+        public static final int k_WristEncPort = 0;
+        public static final double k_CraneEncOffset = 0;
+        public static final double k_WristEncOffset = 0;
+
+        public static final double[] k_WristAngleSetpoint = {
+            2,      //keStow
+            4,      //keProcessor
+            6,      //keReef1
+            8,      //keReef2
+            10,     //keReef3
+            12,     //keReef4
+            14      //keGround
+        };
+        public static final double[] k_CraneAngleSetpoint = {
+            1,      //keStow
+            3,      //keProcessor
+            5,      //keReef1
+            7,      //keReef2
+            9,      //keReef3
+            11,     //keReef4
+            13      //keGround
+        };  
+
+        public static final double k_clawInSpeed = .5;
+        public static final double k_clawOutSpeed = .5;
+
+
+    }
 
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 1;

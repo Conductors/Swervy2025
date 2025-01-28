@@ -4,18 +4,10 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -27,14 +19,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.commands.exampleCommand;
-import frc.robot.commands.driveSpinways;
+import frc.robot.commands.setCranePosition;
 import frc.robot.commands.driveStraight;
+import frc.robot.commands.setClawSpeed;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.algaeGrabber;
 import frc.robot.subsystems.buttonCommandTest;
 
 public class Robot extends TimedRobot {
@@ -43,9 +34,8 @@ public class Robot extends TimedRobot {
   private Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
   private Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
   private Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
-  private Trigger mode = new JoystickButton(m_controller, 7);
+  private Trigger mode    = new JoystickButton(m_controller, 7);
   public Trigger lbButton = new JoystickButton(m_controller, 5);
-
 
   private final Joystick m_joystick = new Joystick(2);
 
@@ -55,6 +45,11 @@ public class Robot extends TimedRobot {
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
   private buttonCommandTest bCmdTest = new buttonCommandTest();
+  private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
+                                                          Constants.aGConstants.k_ClawMotorPort,
+                                                          Constants.aGConstants.k_WristMotorPort,
+                                                          Constants.aGConstants.k_CraneEncPort,
+                                                          Constants.aGConstants.k_WristEncPort );
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -113,10 +108,13 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //Button Triggers
-    yButton.onFalse(new exampleCommand(.1, bCmdTest));
-    xButton.onTrue(bCmdTest.buttonTest2());
-    mode.onTrue(toggleJoystick().alongWith(ledSystem.runPattern(LEDPattern.rainbow(255, 128))));
+    /* Button Triggers */
+    //Mode Button toggles joystick vs. controller driving
+    mode.onTrue(toggleJoystick());   
+
+    //X Button sets Crane Position to "Processor"
+    xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
+    yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
 
     //Pressing A button sends robot forward, releasing sends it back
     aButton.onTrue(new driveStraight(.25, getPeriod(), m_swerve));
@@ -206,94 +204,23 @@ public class Robot extends TimedRobot {
 
 
   /* AUTO Stuff below here */
-   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig fwdconfig = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        .setKinematics(m_swerve.m_kinematics);  // Add kinematics to ensure max speed is actually obeyed
+  public Command getAutonomousCommand() {
+    // Grabs 
+    switch (m_autoSelected) {
+      case "None":
+        break;
+      case "Auto 1":
+        break;
+      case "Auto 2":
+        break;
+      default:
+        break;
+    }
     
-    // Create config for trajectory
-    TrajectoryConfig backconfig = new TrajectoryConfig(
-          AutoConstants.kMaxSpeedMetersPerSecond,
-          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-          .setKinematics(m_swerve.m_kinematics)  // Add kinematics to ensure max speed is actually obeyed
-          .setReversed(true);           // "Reversed" will allow the robot to go backwards through trajs
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory fwdTraj = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(.75, 0)),
-        // End 1.5 meters straight ahead of where we started, facing forward
-        new Pose2d(1.5, 0, new Rotation2d(0)),
-        fwdconfig);
-
-     Trajectory backTraj = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(-.10, 0)),
-        // End 1.5 meters straight ahead of where we started, facing forward
-        new Pose2d(-1.5, 0, new Rotation2d(0)),
-        backconfig);
-
-        Trajectory leftTraj = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)),
-          // Pass through these two interior waypoints, making an 's' curve path
-          List.of(new Translation2d(0, .75)),
-          // End 1.5 meters straight ahead of where we started, facing forward
-          new Pose2d(0,1.5, new Rotation2d(0)),
-          backconfig);
-
-    Trajectory conTrajectory = fwdTraj.concatenate(backTraj);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand1 = 
-    new SwerveControllerCommand(
-      fwdTraj,
-      m_swerve::getPose,
-      m_swerve.m_kinematics,
-      // Position controllers
-      new PIDController(AutoConstants.kPXController, 0, 0),
-      new PIDController(AutoConstants.kPYController, 0, 0),
-      thetaController,
-      m_swerve::setModuleStates,
-      m_swerve);
-
-      SwerveControllerCommand swerveControllerCommand2 = 
-      new SwerveControllerCommand(
-        backTraj,
-        m_swerve::getPose,
-        m_swerve.m_kinematics,
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_swerve::setModuleStates,
-        m_swerve);
-
-        SwerveControllerCommand swerveControllerCommandLeft = 
-        new SwerveControllerCommand(
-          leftTraj,
-          m_swerve::getPose,
-          m_swerve.m_kinematics,
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0),
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          thetaController,
-          m_swerve::setModuleStates,
-          m_swerve);
-  
-        driveStraight driveStraightCommand =
-          new driveStraight(0.3, getPeriod(), m_swerve);
+    //driveStraight driveStraightCommand =
+    //  new driveStraight(0.3, getPeriod(), m_swerve);
         
-        // Reset odometry to the initial pose of the trajectory, run path following
+    // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
     return Commands.sequence(
         new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
@@ -311,6 +238,94 @@ public class Robot extends TimedRobot {
     return Commands.sequence(
         new InstantCommand(() -> isJoystick=!isJoystick)
     );
-}
+  }
+
+  public void oldTrajectorySTuff() {
+    /*
+    //delete.  This was the Trajectory stuff in the 'getAuto' function for a while, until PathPlanner implementation
+        // Create config for trajectory
+        TrajectoryConfig fwdconfig = new TrajectoryConfig(
+          AutoConstants.kMaxSpeedMetersPerSecond,
+          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          .setKinematics(m_swerve.m_kinematics);  // Add kinematics to ensure max speed is actually obeyed
+      
+      // Create config for trajectory
+      TrajectoryConfig backconfig = new TrajectoryConfig(
+            AutoConstants.kMaxSpeedMetersPerSecond,
+            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            .setKinematics(m_swerve.m_kinematics)  // Add kinematics to ensure max speed is actually obeyed
+            .setReversed(true);           // "Reversed" will allow the robot to go backwards through trajs
+  
+      // An example trajectory to follow. All units in meters.
+      Trajectory fwdTraj = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(.75, 0)),
+          // End 1.5 meters straight ahead of where we started, facing forward
+          new Pose2d(1.5, 0, new Rotation2d(0)),
+          fwdconfig);
+  
+       Trajectory backTraj = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(-.10, 0)),
+          // End 1.5 meters straight ahead of where we started, facing forward
+          new Pose2d(-1.5, 0, new Rotation2d(0)),
+          backconfig);
+  
+      Trajectory leftTraj = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(0, .75)),
+        // End 1.5 meters straight ahead of where we started, facing forward
+        new Pose2d(0,1.5, new Rotation2d(0)),
+        backconfig);
+  
+      Trajectory conTrajectory = fwdTraj.concatenate(backTraj);
+  
+      var thetaController = new ProfiledPIDController(
+          AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  
+      SwerveControllerCommand swerveControllerCommand1 = 
+      new SwerveControllerCommand(
+        fwdTraj,
+        m_swerve::getPose,
+        m_swerve.m_kinematics,
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_swerve::setModuleStates,
+        m_swerve);
+  
+      SwerveControllerCommand swerveControllerCommand2 = 
+      new SwerveControllerCommand(
+        backTraj,
+        m_swerve::getPose,
+        m_swerve.m_kinematics,
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_swerve::setModuleStates,
+        m_swerve);
+  
+      SwerveControllerCommand swerveControllerCommandLeft = 
+      new SwerveControllerCommand(
+        leftTraj,
+        m_swerve::getPose,
+        m_swerve.m_kinematics,
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_swerve::setModuleStates,
+        m_swerve);
+        */
+  }
 
 }

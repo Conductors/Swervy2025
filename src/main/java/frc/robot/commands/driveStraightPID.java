@@ -10,12 +10,10 @@ import frc.robot.Drivetrain;
 public class driveStraightPID extends Command{
 private Drivetrain lDrivetrain;
 private double m_distance = 0;
-private double m_currDistance = 0;
 private double m_goalPos = 0;
 private double m_initialPos = 0;
 private double m_currentPos = 0;
 private double m_Period = 0;
-private double m_direction = 0;
 private final ProfiledPIDController m_PIDController;
 
   /**
@@ -24,7 +22,6 @@ private final ProfiledPIDController m_PIDController;
    * @param drivetrain
 */
   public driveStraightPID(double p_Distance, double p_Period, Drivetrain driveTrain) {
-    m_direction = Math.signum(p_Distance);
     m_distance = p_Distance;
     lDrivetrain = driveTrain;
     m_Period = p_Period;
@@ -37,8 +34,8 @@ private final ProfiledPIDController m_PIDController;
           0,
           0,
           new TrapezoidProfile.Constraints(
-              Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, 
-              Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared));
+              Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
+              Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
     m_PIDController.setTolerance(.05);  //sets the tolerance for the PID controller, in meters
   }
 
