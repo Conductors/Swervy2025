@@ -220,17 +220,52 @@ public class Robot extends TimedRobot {
         break;
     }
     
+    driveStraightPID driveStraightCommand =
+      new driveStraightPID(1, getPeriod(), m_swerve);
+    
+    //driveStraightPID driveStraightPID =
+    //  new driveStraightPID(-Math.PI/2, getPeriod(), m_swerve);
+
+      
     driveSidewaysPID driveSidewaysCommand =
-      new driveSidewaysPID(2, getPeriod(), m_swerve);
-      driveSpinwaysPID driveSpinwaysPID =
-      new driveSpinwaysPID(-Math.PI/2, getPeriod(), m_swerve);
+      new driveSidewaysPID(1, getPeriod(), m_swerve);
+    
+      //driveSidewaysPID driveSidewaysPID =
+      //new driveSidewaysPID(-Math.PI/2, getPeriod(), m_swerve);
+
+      
+    driveStraightPID driveBackwardsCommand =
+      new driveStraightPID(-1, getPeriod(), m_swerve);
+      //driveStraightPID driveBackwardsPID =
+      //new driveStraightPID(-Math.PI/2, getPeriod(), m_swerve);
+
+    driveSidewaysPID driveSideways2Command =
+      new driveSidewaysPID(-1, getPeriod(), m_swerve);
+      //driveSidewaysPID driveSideways2PID =
+      //new driveSidewaysPID(-Math.PI/2, getPeriod(), m_swerve);
+
+    driveSpinwaysPID turnAngleCommand =
+      new driveSpinwaysPID(Math.PI/2, getPeriod(), m_swerve);
         
     // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
     return Commands.sequence(
         new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
         new InstantCommand(() -> System.out.println("Command 1:")),
-        driveSpinwaysPID,
+       /*  driveStraightCommand,   //.repeatedly().withTimeout(5),
+        driveSidewaysCommand,
+        driveBackwardsCommand,
+        driveSideways2Command, */
+        turnAngleCommand,
+        driveStraightCommand,
+        /*turnAngleCommand,
+        driveStraightCommand, 
+        turnAngleCommand,
+        driveStraightCommand,
+        turnAngleCommand,
+        driveStraightCommand,
+        turnAngleCommand,
+        driveStraightCommand,*/
         //new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
         //new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
         //m_swerve.getPathPlannerCommand(),
