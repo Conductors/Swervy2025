@@ -47,11 +47,12 @@ public class Robot extends TimedRobot {
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
   private buttonCommandTest bCmdTest = new buttonCommandTest();
-  private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
+  /*private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
                                                           Constants.aGConstants.k_ClawMotorPort,
                                                           Constants.aGConstants.k_WristMotorPort,
                                                           Constants.aGConstants.k_CraneEncPort,
                                                           Constants.aGConstants.k_WristEncPort );
+  */
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -116,8 +117,8 @@ public class Robot extends TimedRobot {
     mode.onTrue(toggleJoystick());   
 
     //X Button sets Crane Position to "Processor"
-    xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
-    yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
+    //xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
+    //yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
 
     //Pressing A button sends robot forward, releasing sends it back
     aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
@@ -222,7 +223,7 @@ public class Robot extends TimedRobot {
     
     driveSidewaysPID driveSidewaysCommand =
       new driveSidewaysPID(2, getPeriod(), m_swerve);
-      driveSpinwaysPID driveSpinwaysPID =
+    driveSpinwaysPID driveSpinwaysPID =
       new driveSpinwaysPID(-Math.PI/2, getPeriod(), m_swerve);
         
     // Reset odometry to the initial pose of the trajectory, run path following

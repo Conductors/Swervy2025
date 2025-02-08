@@ -9,16 +9,13 @@ import frc.robot.Drivetrain;
 
 public class driveSpinwaysPID extends Command{
 private Drivetrain lDrivetrain;
-private double m_distance = 0;
-private double m_currDistance = 0;
 private double m_goalPos = 0;
 private double wrappedAngle = 0;
 private double m_initialPos = 0;
 private double m_currentPos = 0;
 private double m_Period = Constants.kDefaultPeriod;
-private double m_direction = 0;
 private final ProfiledPIDController m_PIDController;
-// private double m_direction = 0;
+
   /**
    *Creates a new command which will spin the robot in place a given angle.  This function optimizes to minimize the
    * angle travelled to between - pi and pi
@@ -26,9 +23,7 @@ private final ProfiledPIDController m_PIDController;
    * @param drivetrain
 */
   public driveSpinwaysPID(double p_Angle, double p_Period, Drivetrain driveTrain) {
-     wrappedAngle = MathUtil.angleModulus(p_Angle); //Wrap the angle to be between -pi and pi
-   // m_direction = Math.signum(wrappedAngle);
-    //m_distance = Math.abs(wrappedAngle);
+    wrappedAngle = MathUtil.angleModulus(p_Angle); //Wrap the angle to be between -pi and pi
     lDrivetrain = driveTrain;
     m_Period = p_Period;
     addRequirements(lDrivetrain);

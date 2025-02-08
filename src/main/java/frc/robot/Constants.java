@@ -108,4 +108,17 @@ public final class Constants {
         public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2"};
       }
 
+      public static final class coralConstants {
+
+        public static final double kP_elevatorA = 1;
+        public static final double kP_elevatorB = 1;
+        public static final double kP_tilt      = 1;
+        
+        public static final double elevatorMaxVelocity = 1;
+        public static final double elevatorMaxAccel = 1;
+
+        public static final double tiltMaxVelocity = 1;
+        public static final double tiltMaxAccel = 1;
+      }
+
 }
