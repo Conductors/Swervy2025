@@ -42,14 +42,14 @@ public class algaeGrabber extends SubsystemBase {
                       int craneEncoderPort,
                       int wristEncoderPort) {
 
-    clawMotor = new SparkMax(intakeMotorPort, SparkLowLevel.MotorType.kBrushless);
-    craneMotor = new SparkMax(craneMotorPort, SparkLowLevel.MotorType.kBrushless);
-    wristMotor = new SparkMax(wristMotorPort, SparkLowLevel.MotorType.kBrushless);
-    m_CraneEncoder = new DutyCycleEncoder(craneEncoderPort);
-    m_CraneEncoder.setDutyCycleRange(1.0/1025.0, 1024.0/1025.0);
+    //clawMotor = new SparkMax(intakeMotorPort, SparkLowLevel.MotorType.kBrushless);
+    //craneMotor = new SparkMax(craneMotorPort, SparkLowLevel.MotorType.kBrushless);
+    //wristMotor = new SparkMax(wristMotorPort, SparkLowLevel.MotorType.kBrushless);
+    //m_CraneEncoder = new DutyCycleEncoder(craneEncoderPort);
+    //m_CraneEncoder.setDutyCycleRange(1.0/1025.0, 1024.0/1025.0);
 
-    m_WristEncoder = new DutyCycleEncoder(wristEncoderPort);
-    m_WristEncoder.setDutyCycleRange(1.0/1025.0, 1024.0/1025.0);
+    //m_WristEncoder = new DutyCycleEncoder(wristEncoderPort);
+    //m_WristEncoder.setDutyCycleRange(1.0/1025.0, 1024.0/1025.0);
     
 
     m_CranePIDController =
@@ -73,19 +73,19 @@ public class algaeGrabber extends SubsystemBase {
     m_WristPIDController.setTolerance(.05);  //sets the tolerance for the PID controller, in meters
     
     // Set the default command for a subsystem here. (set the claw speed to 0)
-    setDefaultCommand(new setClawSpeed(0, this));
+    //setDefaultCommand(new setClawSpeed(0, this));
   }
 
   @Override
   public void periodic() {
-    actualCraneAngle = (m_CraneEncoder.get()-Constants.aGConstants.k_CraneEncOffset)*2*Math.PI;
-    actualWristAngle = (m_WristEncoder.get()-Constants.aGConstants.k_WristEncOffset)*2*Math.PI;
+   // actualCraneAngle = (m_CraneEncoder.get()-Constants.aGConstants.k_CraneEncOffset)*2*Math.PI;
+    //actualWristAngle = (m_WristEncoder.get()-Constants.aGConstants.k_WristEncOffset)*2*Math.PI;
 
     
-    wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
-    craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
+    //wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
+    //craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
 
-    clawMotor.set(desiredClawSpeed);
+    //clawMotor.set(desiredClawSpeed);
 
 
   }

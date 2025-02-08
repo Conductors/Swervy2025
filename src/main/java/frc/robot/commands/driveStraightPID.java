@@ -30,13 +30,13 @@ private final ProfiledPIDController m_PIDController;
       //Gains specific to controlling via 'drive' the robot to a position specified by the user
     m_PIDController =
       new ProfiledPIDController(
-          1,
+          4,
           0,
           0,
           new TrapezoidProfile.Constraints(
-              Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
-              Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-    m_PIDController.setTolerance(.05);  //sets the tolerance for the PID controller, in meters
+                     6,                                       //Constants.AutoConstants.kMaxSpeedMetersPerSecond, 
+                       36));                                                 //Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+    m_PIDController.setTolerance(.01);  //sets the tolerance for the PID controller, in meters
   }
 
   @Override

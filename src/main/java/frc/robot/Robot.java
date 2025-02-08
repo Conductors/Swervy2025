@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.setCranePosition;
-import frc.robot.commands.driveStraight;
+import frc.robot.commands.driveSidewaysPID;
+import frc.robot.commands.driveSpinwaysPID;
+import frc.robot.commands.driveStraightPID;
 import frc.robot.commands.setClawSpeed;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.algaeGrabber;
@@ -87,10 +89,11 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = getAutonomousCommand();
+    
 
     m_autoSelected = m_AutoChooser.getSelected();
-
+    m_autonomousCommand = getAutonomousCommand();
+    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -117,8 +120,8 @@ public class Robot extends TimedRobot {
     yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
 
     //Pressing A button sends robot forward, releasing sends it back
-    aButton.onTrue(new driveStraight(.25, getPeriod(), m_swerve));
-    aButton.onFalse(new driveStraight(-.25, getPeriod(), m_swerve));
+    aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
+    aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
 
     //Pressing B button spins the robot 90 degrees counter clockwise
     //bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
@@ -217,18 +220,20 @@ public class Robot extends TimedRobot {
         break;
     }
     
-    //driveStraight driveStraightCommand =
-    //  new driveStraight(0.3, getPeriod(), m_swerve);
+    driveSidewaysPID driveSidewaysCommand =
+      new driveSidewaysPID(2, getPeriod(), m_swerve);
+      driveSpinwaysPID driveSpinwaysPID =
+      new driveSpinwaysPID(-Math.PI/2, getPeriod(), m_swerve);
         
     // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
     return Commands.sequence(
         new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
         new InstantCommand(() -> System.out.println("Command 1:")),
-        //driveStraightCommand,
+        driveSpinwaysPID,
         //new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
         //new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
-        m_swerve.getPathPlannerCommand(),
+        //m_swerve.getPathPlannerCommand(),
         new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
         new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
         new InstantCommand(() -> System.out.println("Done !")));

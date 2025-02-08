@@ -37,13 +37,13 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backRightLocation = new Translation2d(-0.303, -0.303);
 
   private final SwerveModule m_frontLeft = new SwerveModule(11, 10,  
-                                                    0, .666);
+                                                    0, 0.667);
   private final SwerveModule m_frontRight = new SwerveModule(15, 14, 
-                                                    2, .826); 
+                                                    2, 0.825); 
   private final SwerveModule m_backLeft = new SwerveModule(13, 12,  
-                                                    1, .402);
+                                                    1, 0.403);
   private final SwerveModule m_backRight = new SwerveModule(17, 16, 
-                                                    3, .334); 
+                                                    3, 0.331); 
 
   private RobotConfig mRobotconfig;
 
@@ -274,8 +274,8 @@ public class Drivetrain extends SubsystemBase {
   public Command getPathPlannerCommand() {
     try{
         // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1"); //forward 1.5m, then stop
-        //PathPlannerPath path = PathPlannerPath.fromPathFile("fwd_left");    //forward 1.5m, the left 1.5m (heading stays 0 deg)
+        //PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1"); //forward 1.5m, then stop
+        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1");    //forward 1.5m, the left 1.5m (heading stays 0 deg)
         //PathPlannerPath path = PathPlannerPath.fromPathFile("spin_in_place");
 
 
