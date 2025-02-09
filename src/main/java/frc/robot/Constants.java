@@ -52,6 +52,28 @@ public final class Constants {
         keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, kNumOfPosition       //must keep this order for setpoint arrays
     };
 
+    public static enum tiltPosition {
+        keStow, keLoad, keScore
+    };
+
+    public static final class csConstants {
+        public static final double[] k_ElevatorHeight = {
+            2,      //keStow
+            4,      //keProcessor
+            6,      //keReef1
+            8,      //keReef2
+            10,     //keReef3
+            12,     //keReef4
+            14      //keGround
+        };
+
+        public static final double[] k_tiltAngleSetpoint = {
+            0,      //keStow
+            2,      //keLoad
+            4       //keScore
+        };
+    }
+
     public static final class aGConstants {
         public static final int k_CraneMotorPort = 0;
         public static final int k_WristMotorPort = 0;

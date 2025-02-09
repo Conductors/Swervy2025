@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Drivetrain;
 
-public class driveStraightPID extends Command{
+public class driveStraightPID extends Command {
 private Drivetrain lDrivetrain;
 private double m_distance = 0;
 private double m_goalPos = 0;
@@ -16,11 +16,12 @@ private double m_currentPos = 0;
 private double m_Period = 0;
 private final ProfiledPIDController m_PIDController;
 
+
   /**
    *Creates a new DriveDistance
    * @param meters
    * @param drivetrain
-*/
+  */
   public driveStraightPID(double p_Distance, double p_Period, Drivetrain driveTrain) {
     m_distance = p_Distance;
     lDrivetrain = driveTrain;
@@ -43,6 +44,7 @@ private final ProfiledPIDController m_PIDController;
   public void initialize() {
     //Run once, at the start of the command
     m_initialPos = lDrivetrain.m_odometry.getPoseMeters().getX();
+
     m_goalPos = m_initialPos + m_distance;
 
     System.out.println(m_initialPos);
