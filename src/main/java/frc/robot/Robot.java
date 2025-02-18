@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -22,22 +23,34 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.setCranePosition;
+import frc.robot.commands.setGateState;
 import frc.robot.commands.driveSidewaysPID;
 import frc.robot.commands.driveSpinwaysPID;
 import frc.robot.commands.driveStraightPID;
+import frc.robot.commands.driveToPositionPID;
 import frc.robot.commands.setClawSpeed;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.algaeGrabber;
 import frc.robot.subsystems.buttonCommandTest;
+import frc.robot.subsystems.coralSubsystem;
 
 public class Robot extends TimedRobot {
   private final XboxController m_controller = new XboxController(0);
+  private final XboxController m_controller2 = new XboxController(1);
   private Trigger yButton = new JoystickButton(m_controller, XboxController.Button.kY.value);
   private Trigger xButton = new JoystickButton(m_controller, XboxController.Button.kX.value);
   private Trigger aButton = new JoystickButton(m_controller, XboxController.Button.kA.value);
   private Trigger bButton = new JoystickButton(m_controller, XboxController.Button.kB.value);
-  private Trigger mode    = new JoystickButton(m_controller, 7);
-  public Trigger lbButton = new JoystickButton(m_controller, 5);
+  private Trigger startButton = new JoystickButton(m_controller, 8);
+  private Trigger backButton    = new JoystickButton(m_controller, 7);
+  private Trigger lbButton = new JoystickButton(m_controller, 5);
+  private Trigger rbButton = new JoystickButton(m_controller, 6);
+  private Trigger yButton2 = new JoystickButton(m_controller2, XboxController.Button.kY.value);
+  private Trigger xButton2 = new JoystickButton(m_controller2, XboxController.Button.kX.value);
+  private Trigger aButton2 = new JoystickButton(m_controller2, XboxController.Button.kA.value);
+  private Trigger bButton2 = new JoystickButton(m_controller2, XboxController.Button.kB.value);
+
+ // Servo exampleServo = new Servo(8);
 
   private final Joystick m_joystick = new Joystick(2);
 
@@ -47,12 +60,14 @@ public class Robot extends TimedRobot {
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
   private buttonCommandTest bCmdTest = new buttonCommandTest();
-  /*private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
+  private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
                                                           Constants.aGConstants.k_ClawMotorPort,
                                                           Constants.aGConstants.k_WristMotorPort,
                                                           Constants.aGConstants.k_CraneEncPort,
                                                           Constants.aGConstants.k_WristEncPort );
-  */
+
+  private coralSubsystem m_CoralSubsystem = new coralSubsystem();
+  
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -114,20 +129,25 @@ public class Robot extends TimedRobot {
 
     /* Button Triggers */
     //Mode Button toggles joystick vs. controller driving
-    mode.onTrue(toggleJoystick());   
+    backButton.onTrue(toggleJoystick());   
 
     //X Button sets Crane Position to "Processor"
     //xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
     //yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
 
     //Pressing A button sends robot forward, releasing sends it back
-    aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
-    aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
-
+    //aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
+    //aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
+    aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
     //Pressing B button spins the robot 90 degrees counter clockwise
     //bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
-    bButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
-    
+    startButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
+    bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
+    yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
+    xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    lbButton.onTrue(new setGateState(true, m_CoralSubsystem));
+    lbButton.onFalse(new setGateState(false, m_CoralSubsystem));
+
 
   }
   
@@ -209,13 +229,28 @@ public class Robot extends TimedRobot {
 
   /* AUTO Stuff below here */
   public Command getAutonomousCommand() {
+
+      Command temp = new Command() {};
     // Grabs 
     switch (m_autoSelected) {
       case "None":
+      temp = m_swerve.getPathPlannerCommand();
         break;
       case "Auto 1":
+        driveStraightPID driveStraightCommand =
+        new driveStraightPID(1, getPeriod(), m_swerve);
+         temp = Commands.sequence(
+          new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+          driveStraightCommand);
         break;
       case "Auto 2":
+        temp = Commands.sequence(
+        new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+        new InstantCommand(() -> System.out.println("Command 1:")),
+        driveStraight(1),
+          new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
+          new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
+          new InstantCommand(() -> System.out.println("Done !")));
         break;
       default:
         break;
@@ -234,38 +269,26 @@ public class Robot extends TimedRobot {
       new driveSidewaysPID(-1, getPeriod(), m_swerve);
 
     driveSpinwaysPID turnAngleCommand =
-      new driveSpinwaysPID(Math.PI/2, getPeriod(), m_swerve);
+      new driveSpinwaysPID(Math.PI/3, getPeriod(), m_swerve);
 
-    Command resetOdoCommand = new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0))));
+    InstantCommand resetOdoCommand = new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0))));
     
     
     // Reset odometry to the initial pose of the trajectory, run path following
     // command, then stop at the end.
-    return Commands.sequence(
-      resetOdoCommand,
-      new InstantCommand(() -> System.out.println("Command 1:")),
-      /*  driveStraightCommand,   //.repeatedly().withTimeout(5),
-      driveSidewaysCommand,
-      driveBackwardsCommand,
-      driveSideways2Command, */
-      turnAngleCommand.andThen(resetOdoCommand),
-      driveStraightCommand,
-      /*turnAngleCommand,
-      driveStraightCommand, 
-      turnAngleCommand,
-      driveStraightCommand,
-      turnAngleCommand,
-      driveStraightCommand,
-      turnAngleCommand,
-      driveStraightCommand,*/
-        //new InstantCommand(() -> System.out.println("Stop & wait 3 seconds")),
-        //new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(3),
-        //m_swerve.getPathPlannerCommand(),
-        new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
-        new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
-        new InstantCommand(() -> System.out.println("Done !")));
+    return temp;
   }
+ 
+  public Command driveStraight(double dist) {
+    return new driveStraightPID(dist, getPeriod(), m_swerve);
+  }
+    public Command driveSideways(double dist) {
+      return new driveSidewaysPID(dist, getPeriod(), m_swerve);
+    }
 
+      public Command driveSpinways(double dist) {
+        return new driveSpinwaysPID(dist, getPeriod(), m_swerve);
+  }
   public Command toggleJoystick() {
     return Commands.sequence(
         new InstantCommand(() -> isJoystick=!isJoystick)

@@ -277,7 +277,7 @@ public class Drivetrain extends SubsystemBase {
     try{
         // Load the path you want to follow using its name in the GUI
         //PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1"); //forward 1.5m, then stop
-        PathPlannerPath path = PathPlannerPath.fromPathFile("testPath1");    //forward 1.5m, the left 1.5m (heading stays 0 deg)
+        PathPlannerPath path = PathPlannerPath.fromPathFile("fwd_left");    //forward 1.5m, the left 1.5m (heading stays 0 deg)
         //PathPlannerPath path = PathPlannerPath.fromPathFile("spin_in_place");
 
 

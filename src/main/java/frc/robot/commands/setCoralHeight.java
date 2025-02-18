@@ -36,10 +36,10 @@ public class setCoralHeight extends Command {
       case keReef2:
       case keReef3:
       case keGround:
-        m_CoralSubsystem.setDesiredHeight(Constants.csConstants.k_ElevatorHeight[m_setPoint.ordinal()]);        
-        break;
       case keReef1:
       case keReef4:
+        m_CoralSubsystem.setDesiredHeight(Constants.csConstants.k_ElevatorHeight[m_setPoint.ordinal()]);        
+        break;
       default:
         System.out.println("this is not a valid algae setpoint");
         break;

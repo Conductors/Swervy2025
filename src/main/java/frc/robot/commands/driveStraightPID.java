@@ -47,8 +47,8 @@ private final ProfiledPIDController m_PIDController;
 
     m_goalPos = m_initialPos + m_distance;
 
-    System.out.println(m_initialPos);
-    System.out.println(m_goalPos);
+    //System.out.println(m_initialPos);
+    //System.out.println(m_goalPos);
 
   }
 
@@ -56,7 +56,7 @@ private final ProfiledPIDController m_PIDController;
   public void execute() {
     //run repeatedly, until isFinished() returns true
     m_currentPos = lDrivetrain.m_odometry.getPoseMeters().getX();
-    System.out.println(m_currentPos);
+    //System.out.println(m_currentPos);
     
     //Drive the robot to the goal position, clamping the error output to +/- max speed
     lDrivetrain.drive(

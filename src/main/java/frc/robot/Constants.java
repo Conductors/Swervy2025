@@ -75,11 +75,11 @@ public final class Constants {
     }
 
     public static final class aGConstants {
-        public static final int k_CraneMotorPort = 0;
-        public static final int k_WristMotorPort = 0;
-        public static final int k_ClawMotorPort = 0;
-        public static final int k_CraneEncPort = 0;
-        public static final int k_WristEncPort = 0;
+        public static final int k_CraneMotorPort = 4;
+        public static final int k_WristMotorPort = 5;
+        public static final int k_ClawMotorPort = 6;
+        public static final int k_CraneEncPort = 7;
+        public static final int k_WristEncPort = 8;
         public static final double k_CraneEncOffset = 0;
         public static final double k_WristEncOffset = 0;
 
