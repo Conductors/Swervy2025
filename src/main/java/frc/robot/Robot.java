@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -23,9 +25,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.setCranePosition;
 import frc.robot.commands.setGateState;
+import frc.robot.commands.climbCage;
 import frc.robot.commands.driveSidewaysPID;
 import frc.robot.commands.driveSpinwaysPID;
 import frc.robot.commands.driveStraightPID;
+import frc.robot.commands.driveToPositionPID;
+import frc.robot.commands.setClawSpeed;
+import frc.robot.commands.setCoralHeight;
+import frc.robot.commands.setCoralTiltAngle;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.algaeGrabber;
 import frc.robot.subsystems.coralSubsystem;
@@ -59,6 +66,9 @@ public class Robot extends TimedRobot {
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
 
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+
+  /*
   private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
                                                           Constants.aGConstants.k_ClawMotorPort,
                                                           Constants.aGConstants.k_WristMotorPort,
@@ -66,7 +76,7 @@ public class Robot extends TimedRobot {
                                                           Constants.aGConstants.k_WristEncPort );
 
   private coralSubsystem m_CoralSubsystem = new coralSubsystem();
-  
+  */
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -85,6 +95,7 @@ public class Robot extends TimedRobot {
     m_AutoChooser.setDefaultOption("None", Constants.AutoConstants.kAutoProgram[0]);
     m_AutoChooser.addOption("Auto 1", Constants.AutoConstants.kAutoProgram[1]);
     m_AutoChooser.addOption("Auto 2", Constants.AutoConstants.kAutoProgram[2]);
+    m_AutoChooser.addOption("Auto 3", Constants.AutoConstants.kAutoProgram[3]);
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
   }
@@ -98,13 +109,14 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
+    publisher.set(m_swerve.m_odometry.getPoseMeters());
   }
 
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    
+    SmartDashboard.putData("Field", m_field);
 
     m_autoSelected = m_AutoChooser.getSelected();
     m_autonomousCommand = getAutonomousCommand();
@@ -119,6 +131,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     // Do this in either robot or subsystem init
     SmartDashboard.putData("Field", m_field);
+    publisher.set(m_swerve.m_odometry.getPoseMeters());
     
     // This makes sure that the autonomous stops running when teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove this line or comment it out.
@@ -137,16 +150,28 @@ public class Robot extends TimedRobot {
     //Pressing A button sends robot forward, releasing sends it back
     //aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
     //aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
-    aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
-    //Pressing B button spins the robot 90 degrees counter clockwise
-    //bButton.onTrue(new driveSpinways(Math.PI/2, getPeriod(), m_swerve));
+    //aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
     startButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
-    bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
-    yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
-    xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
-    lbButton.onTrue(new setGateState(true, m_CoralSubsystem));
-    lbButton.onFalse(new setGateState(false, m_CoralSubsystem));
-
+    //bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
+    //yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
+    //xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    //lbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
+    //rbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawOutSpeed, m_AlgaeGrabber));
+    //lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
+    //lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
+    //aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    //aButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
+    //bButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    //bButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
+    //yButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    //yButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
+    //xButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    //xButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
+    //backButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem));
+    //backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
+    //startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
+    //startButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
+    //rbButton2.whileTrue(new climbCage(true, null));
 
   }
   
@@ -220,7 +245,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller Left X", m_controller.getLeftX());
     SmartDashboard.putNumber("Controller Left Y", m_controller.getLeftY());
     SmartDashboard.putNumber("Controller Right X", m_controller.getRightX());
-    SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getAngle());
+    SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getRotation2d().getDegrees());
     SmartDashboard.putBoolean("Joystick Enabled", isJoystick);
     
   }
@@ -249,6 +274,14 @@ public class Robot extends TimedRobot {
           new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
           new InstantCommand(() -> System.out.println("Done !")));
         break;
+      case "Auto 3":
+        temp = Commands.sequence(
+        new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+        new InstantCommand(() -> System.out.println("Command 1:")),
+        driveToPosition(new Pose2d(1, 1, new Rotation2d(0))),
+        new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
+        new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
+        new InstantCommand(() -> System.out.println("Done !")));
       default:
         break;
     }
@@ -269,6 +302,10 @@ public class Robot extends TimedRobot {
 
   public Command driveSpinways(double angle) {
     return new driveSpinwaysPID(angle, getPeriod(), m_swerve);
+  }
+
+  public Command driveToPosition(Pose2d position) {
+    return new driveToPositionPID(position, getPeriod(), m_swerve);
   }
 
   public Command toggleJoystick() {
