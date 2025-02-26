@@ -127,7 +127,7 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
 
-        public static final String[] kAutoProgram = {"None", "BasicBackup", "Auto 1", "Auto 2", "Auto 3"};
+        public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2", "Auto 3", "BackUp", "Score1Coral", "ScoreCoralClearAlgae"};
       }
 
       public static final class coralConstants {

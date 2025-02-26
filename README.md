@@ -24,7 +24,7 @@ Conductors 4580 Swerve Bot for 2025
 - Coral Break/Idle Position
 
 ###### Test
-- Drive to Position PID ( spin)
+- Drive to Position PID (spin)
 - Path Planner
 
 ###### Old Computer
