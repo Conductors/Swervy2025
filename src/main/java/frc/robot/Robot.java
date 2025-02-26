@@ -74,9 +74,9 @@ public class Robot extends TimedRobot {
                                                           Constants.aGConstants.k_WristMotorPort,
                                                           Constants.aGConstants.k_CraneEncPort,
                                                           Constants.aGConstants.k_WristEncPort );
-
+*/
   private coralSubsystem m_CoralSubsystem = new coralSubsystem();
-  */
+  
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -93,9 +93,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_AutoChooser.setDefaultOption("None", Constants.AutoConstants.kAutoProgram[0]);
-    m_AutoChooser.addOption("Auto 1", Constants.AutoConstants.kAutoProgram[1]);
-    m_AutoChooser.addOption("Auto 2", Constants.AutoConstants.kAutoProgram[2]);
-    m_AutoChooser.addOption("Auto 3", Constants.AutoConstants.kAutoProgram[3]);
+    m_AutoChooser.addOption("Basic Backup", Constants.AutoConstants.kAutoProgram[1]);
+    m_AutoChooser.addOption("Auto 1", Constants.AutoConstants.kAutoProgram[2]);
+    m_AutoChooser.addOption("Auto 2", Constants.AutoConstants.kAutoProgram[3]);
+    m_AutoChooser.addOption("Auto 3", Constants.AutoConstants.kAutoProgram[4]);
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
   }
@@ -254,11 +255,17 @@ public class Robot extends TimedRobot {
   /* AUTO Stuff below here */
   public Command getAutonomousCommand() {
 
-      Command temp = new Command() {};
+    Command temp = new Command() {};
+    
     // Grabs the choser Auto from Shuffleboard
     switch (m_autoSelected) {
       case "None":
       temp = m_swerve.getPathPlannerCommand();
+        break;
+      case "BasicBackup":
+        temp = Commands.sequence(
+          new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+          driveStraight(-1));
         break;
       case "Auto 1":
         temp = Commands.sequence(
@@ -285,6 +292,9 @@ public class Robot extends TimedRobot {
       default:
         break;
     }
+    
+    
+    new InstantCommand(() -> new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem));
 
     return temp;
   }
