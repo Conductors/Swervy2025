@@ -198,14 +198,14 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumberArray("ActualStates", moduleActualStates);
     SmartDashboard.putNumberArray("OptDesiredStates", moduleOptDesStates);
-    SmartDashboard.putNumber("FL_adj_Position", m_frontLeft.getAdjustedAngle());
-    SmartDashboard.putNumber("FR_adj_Position", m_frontRight.getAdjustedAngle());
-    SmartDashboard.putNumber("BL_adj_Position", m_backLeft.getAdjustedAngle());
-    SmartDashboard.putNumber("BR_adj_Position", m_backRight.getAdjustedAngle());
-    SmartDashboard.putNumber("FL_abs_Position", m_frontLeft.getAbsAngle());
-    SmartDashboard.putNumber("FR_abs_Position", m_frontRight.getAbsAngle());
-    SmartDashboard.putNumber("BL_abs_Position", m_backLeft.getAbsAngle());
-    SmartDashboard.putNumber("BR_abs_Position", m_backRight.getAbsAngle());
+    SmartDashboard.putNumber("FL adj Pos", m_frontLeft.getAdjustedAngle());
+    SmartDashboard.putNumber("FR adj Pos", m_frontRight.getAdjustedAngle());
+    SmartDashboard.putNumber("BL adj Pos", m_backLeft.getAdjustedAngle());
+    SmartDashboard.putNumber("BR adj Pos", m_backRight.getAdjustedAngle());
+    SmartDashboard.putNumber("FL abs Pos", m_frontLeft.getAbsAngle());
+    SmartDashboard.putNumber("FR abs Pos", m_frontRight.getAbsAngle());
+    SmartDashboard.putNumber("BL abs Pos", m_backLeft.getAbsAngle());
+    SmartDashboard.putNumber("BR abs Pos", m_backRight.getAbsAngle());
 
 
     SmartDashboard.putNumberArray("FL Actual V", m_frontLeft.getActualMotorVoltageData());

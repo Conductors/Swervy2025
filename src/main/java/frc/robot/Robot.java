@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.setCranePosition;
 import frc.robot.commands.setGateState;
+import frc.robot.Constants.Position;
+import frc.robot.Constants.tiltPosition;
 import frc.robot.commands.climbCage;
 import frc.robot.commands.driveSidewaysPID;
 import frc.robot.commands.driveSpinwaysPID;
@@ -71,13 +73,13 @@ public class Robot extends TimedRobot {
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
 
   private algaeGrabber m_AlgaeGrabber = new algaeGrabber(Constants.aGConstants.k_CraneMotorPort,
-                                                          Constants.aGConstants.k_ClawMotorPort,
+                                                          Constants.aGConstants.k_ClawMotorPortUpper,
+                                                          Constants.aGConstants.k_ClawMotorPortLower,
                                                           Constants.aGConstants.k_WristMotorPort,
                                                           Constants.aGConstants.k_CraneEncPort,
                                                           Constants.aGConstants.k_WristEncPort );
 
   private coralSubsystem m_CoralSubsystem = new coralSubsystem();
-  
   
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
@@ -101,8 +103,7 @@ public class Robot extends TimedRobot {
     m_AutoChooser.addOption("BackUp", Constants.AutoConstants.kAutoProgram[4]);
     m_AutoChooser.addOption("ScoreOneCoral", Constants.AutoConstants.kAutoProgram[5]);
     m_AutoChooser.addOption("ScoreCoralClearAlgae", Constants.AutoConstants.kAutoProgram[6]);
-    m_AutoChooser.addOption("diagScoreAuto", Constants.AutoConstants.kAutoProgram[7]);
-
+    m_AutoChooser.addOption("ScoreCoralTake1Algae", Constants.AutoConstants.kAutoProgram[7]);
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
   }
@@ -261,17 +262,11 @@ public class Robot extends TimedRobot {
   /* AUTO Stuff below here */
   public Command getAutonomousCommand() {
 
-    Command temp = new Command() {};
-    
+      Command temp = new Command() {};
     // Grabs the choser Auto from Shuffleboard
     switch (m_autoSelected) {
       case "None":
       temp = m_swerve.getPathPlannerCommand();
-        break;
-      case "BasicBackup":
-        temp = Commands.sequence(
-          new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
-          driveStraight(-1));
         break;
       case "Auto 1":
         temp = Commands.sequence(
@@ -305,48 +300,69 @@ public class Robot extends TimedRobot {
           new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
           new InstantCommand(() -> System.out.println("Done !")));
           break;
-      case "ScoreOneCoral":
-        temp = Commands.sequence(
-          new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
-          new InstantCommand(() -> System.out.println("Drive Forward")),
-          driveStraight(1.25),
-          new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
-          setCoralHeightReef1(),
-          new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
-          scoreCoralReef1(),
-          new InstantCommand(() -> System.out.println("Wait")),
-          new WaitCommand(3.5),
-          new InstantCommand(() -> System.out.println("Set Coral Height - Stow")),
-          stowCoral(),
-          new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
-          new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
-          new InstantCommand(() -> System.out.println("Done !")));
-          break;
-      case "ScoreCoralClearAlgae":
-        temp = Commands.sequence(
-          new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
-          new InstantCommand(() -> System.out.println("Drive Forward")),
-          driveStraight(1.25),
-          new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
-          setCoralHeightReef1(),
-          new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
-          scoreCoralReef1(),
-          new InstantCommand(() -> System.out.println("Wait")),
-          new WaitCommand(3.5),
-          driveStraight(-0.5),
-          driveSpinways(-Math.PI/2),
-          setAlgaeHeightReef2(),
-          driveStraight(0.5).alongWith(clawSpeedScore()),
-          driveStraight(-0.5).alongWith(clawSpeedZero()),
-          driveSideways(1),
-          //chuck out algae
-          new WaitCommand(3.5),
-           new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
-          new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
-          new InstantCommand(() -> System.out.println("Done !")));
+          case "ScoreOneCoral":
+          temp = Commands.sequence(
+            new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+            new InstantCommand(() -> System.out.println("Drive Forward")),
+            driveStraight(1.25),
+            new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
+            setCoralHeight(Constants.Position.keReef1),
+            new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
+            scoreCoralReef1(),
+            new InstantCommand(() -> System.out.println("Wait")),
+            new WaitCommand(3.5),
+            new InstantCommand(() -> System.out.println("Set Coral Height - Stow")),
+            stowCoral(),
+            new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
+            new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
+            new InstantCommand(() -> System.out.println("Done !")));
+            break;
+      case "ScoreCoralTake1Algae":
+      temp = Commands.sequence(
+        new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+        new InstantCommand(() -> System.out.println("Drive Forward")),
+        driveStraight(1.25),
+        new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
+        setCoralHeight(Constants.Position.keReef1),
+        new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
+        scoreCoralReef1(),
+        new InstantCommand(() -> System.out.println("Wait")),
+        new WaitCommand(3.5),
+        new InstantCommand(() -> System.out.println("Go Backwards")),
+        driveStraight(-0.5),
+        new InstantCommand(() -> System.out.println("Rotate 90 degrees")),
+        driveSpinways(-Math.PI/2),
+        new InstantCommand(() -> System.out.println("Set Algae Height - Reef 2")),
+        setAlgaeHeight(Constants.Position.keReef2),
+        new InstantCommand(() -> System.out.println("Drive Forward and set Claw to Intake Speed")),
+        driveStraight(0.5).alongWith(clawSpeedScore()),
+        new InstantCommand(() -> System.out.println("Wait")),
+        new WaitCommand(3.5),
+        new InstantCommand(() -> System.out.println("Go Backwards and Stop Claw")),
+        driveStraight(-0.5).alongWith(clawSpeedZero()),
+        new InstantCommand(() -> System.out.println("Go left")),
+        driveSideways(1),
+        new InstantCommand(() -> System.out.println("Throw out Algae")),
+        clawSpeedOutput(),
+        new InstantCommand(() -> System.out.println("Stop Claw")),
+        clawSpeedZero(),
+        new InstantCommand(() -> System.out.println("Go right")),
+        driveSideways(-1),
+        new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
+        new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
+        new InstantCommand(() -> System.out.println("Done !")));
           break;
       case "diagScoreReef":
         diagScoreAuto(true);
+        break;
+      case "ScoreCoralClearAlgae":
+        temp = Commands.sequence(
+            new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
+            new InstantCommand(() -> System.out.println("Drive Forward")),
+            driveStraight(1.25),
+            scoreCoral(Constants.Position.keReef1),
+            driveStraight(-0.5)
+        );
         break;
       default:
         break;
@@ -373,8 +389,8 @@ public class Robot extends TimedRobot {
     return new driveToPositionPID(position, getPeriod(), m_swerve);
   }
 
-  public Command setCoralHeightReef1() {
-    return new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem);
+  public Command setCoralHeight(Position pos) {
+    return new setCoralHeight(pos, m_CoralSubsystem);
   }
 
   public Command scoreCoralReef1() {
@@ -385,8 +401,8 @@ public class Robot extends TimedRobot {
     return new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem);
   }
 
-  public Command setAlgaeHeightReef2() {
-    return new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber);
+  public Command setAlgaeHeight(Position pos) {
+    return new setCranePosition(pos, m_AlgaeGrabber);
   }
 
 public Command clawSpeedScore() {
@@ -397,11 +413,42 @@ public Command clawSpeedZero() {
   return new setClawSpeed(0, m_AlgaeGrabber);
 }
 
-public Command toggleJoystick() {
+public Command clawSpeedOutput() {
+  return new setClawSpeed(-3, m_AlgaeGrabber);
+}
+
+public Command Elbethle(tiltPosition tiltPos) {
+  return new setCoralTiltAngle(tiltPos, m_CoralSubsystem);
+}
+
+
+public Command scoreCoral(Position pos) {
   return Commands.sequence(
-      new InstantCommand(() -> isJoystick=!isJoystick)
+  new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
+  new setCoralHeight(pos, m_CoralSubsystem),
+  new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
+  Elbethle(Constants.tiltPosition.keScore),
+  new InstantCommand(() -> System.out.println("Wait")),
+  new WaitCommand(3.5));
+}
+
+public Command takeAlgae(Position algaePos) {
+  return Commands.sequence(
+    new InstantCommand(() -> System.out.println("Set Algae Height - Reef 2")),
+        setAlgaeHeight(Constants.Position.keReef2),
+        new InstantCommand(() -> System.out.println("Drive Forward and set Claw to Intake Speed")),
+        driveStraight(0.5).alongWith(clawSpeedScore()),
+        new InstantCommand(() -> System.out.println("Wait")),
+        new WaitCommand(3.5),
+        clawSpeedZero()
   );
 }
+
+  public Command toggleJoystick() {
+    return Commands.sequence(
+        new InstantCommand(() -> isJoystick=!isJoystick)
+    );
+  }
 
 /**
  * diagScoreAuto starts in front of the cage closest to the wall facing towards the driver stations
@@ -419,7 +466,7 @@ public Command diagScoreAuto(boolean isOnBlueSide) {
     new InstantCommand(() -> System.out.println("Drive Forward to Reef")),
     driveStraight(3.3), //calculate the diagnoal distance to the reef
     new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
-    setCoralHeightReef1(),
+    setCoralHeight(Constants.Position.keReef1),
     new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
     scoreCoralReef1(),
     new InstantCommand(() -> System.out.println("Wait")),

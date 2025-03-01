@@ -160,8 +160,8 @@ public class SwerveModule {
     putMotorVoltageData(driveOutput + driveFeedforward, turnOutput+turnFeedforward);
     
     /* This is the final output to the motors */
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+    //m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+    //m_turningMotor.setVoltage(turnOutput + turnFeedforward);
   }
 
   public double getAdjustedAngle()

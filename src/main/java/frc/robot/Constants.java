@@ -77,7 +77,8 @@ public final class Constants {
     public static final class aGConstants {
         public static final int k_CraneMotorPort = 4;
         public static final int k_WristMotorPort = 5;
-        public static final int k_ClawMotorPort = 6;
+        public static final int k_ClawMotorPortUpper = 7;
+        public static final int k_ClawMotorPortLower = 6;
         public static final int k_CraneEncPort = 7;
         public static final int k_WristEncPort = 8;
         public static final double k_CraneEncOffset = 0;
@@ -127,7 +128,7 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
 
-        public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2", "Auto 3", "BackUp", "Score1Coral", "ScoreCoralClearAlgae", "diagScoreReef"};
+        public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2", "Auto 3", "BackUp", "Score1Coral", "ScoreCoralTake1Algae", "diagScoreReef", "ScoreCoralClearAlgae"};
       }
 
       public static final class coralConstants {

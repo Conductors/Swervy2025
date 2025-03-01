@@ -17,7 +17,8 @@ public class algaeGrabber extends SubsystemBase {
   /** Creates a new algaeGrabber. */
   private SparkMax wristMotor;  
   private SparkMax craneMotor;
-  private SparkMax clawMotor;
+  private SparkMax clawMotorUpper;
+  private SparkMax clawMotorLower;
   
   private DutyCycleEncoder m_CraneEncoder;
   private DutyCycleEncoder m_WristEncoder;
@@ -37,12 +38,14 @@ public class algaeGrabber extends SubsystemBase {
    * @param drive The drive subsystem on which this command will run
    */
   public algaeGrabber(int craneMotorPort,
-                      int intakeMotorPort,
+                      int intakeMotorPortUpper,
+                      int intakeMotorPortLower,
                       int wristMotorPort,
                       int craneEncoderPort,
                       int wristEncoderPort) {
 
-    clawMotor = new SparkMax(intakeMotorPort, SparkLowLevel.MotorType.kBrushless);
+    clawMotorUpper = new SparkMax(intakeMotorPortUpper, SparkLowLevel.MotorType.kBrushless);
+    clawMotorLower = new SparkMax(intakeMotorPortLower, SparkLowLevel.MotorType.kBrushless);
     craneMotor = new SparkMax(craneMotorPort, SparkLowLevel.MotorType.kBrushless);
     wristMotor = new SparkMax(wristMotorPort, SparkLowLevel.MotorType.kBrushless);
     m_CraneEncoder = new DutyCycleEncoder(craneEncoderPort);
@@ -82,10 +85,11 @@ public class algaeGrabber extends SubsystemBase {
     actualWristAngle = (m_WristEncoder.get()-Constants.aGConstants.k_WristEncOffset)*2*Math.PI;
 
     
-    wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
-    craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
+    //wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
+    //craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
 
-    clawMotor.set(desiredClawSpeed);
+    //clawMotorUpper.set(desiredClawSpeed);
+    //clawMotorLower.set(desiredClawSpeed);
 
   }
 
