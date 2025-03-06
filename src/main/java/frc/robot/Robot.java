@@ -39,6 +39,7 @@ import frc.robot.commands.setCoralState;
 import frc.robot.commands.setCoralTiltAngle;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.algaeGrabber;
+import frc.robot.subsystems.cageClimber;
 import frc.robot.subsystems.coralSubsystem;
 
 public class Robot extends TimedRobot {
@@ -80,6 +81,7 @@ public class Robot extends TimedRobot {
                                                           Constants.aGConstants.k_WristEncPort );
 
   private coralSubsystem m_CoralSubsystem = new coralSubsystem();
+  private cageClimber m_CageClimber = new cageClimber();
   
 
   // Slew rate limiters to make joystick inputs more gentle; Passing in "3" means 1/3 sec from 0 to 1.
@@ -158,29 +160,31 @@ public class Robot extends TimedRobot {
     //Pressing A button sends robot forward, releasing sends it back
     //aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
     //aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
-    //aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
+    aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
     startButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
-    //bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
-    //yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
-    //xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
-    //lbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
-    //rbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawOutSpeed, m_AlgaeGrabber));
-    //lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
-    //lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
-    //aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    //aButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
-    //bButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    //bButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
-    //yButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    //yButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
-    //xButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    //xButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
-    //backButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem));
-    //backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
-    //startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
-    //startButton2.onTrue(new setCoralHeight(Constants.csConstants.k_ElevatorHeight, m_CoralSubsystem));
-    //rbButton2.whileTrue(new climbCage(true, null));
-
+    bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
+    yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
+    xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    lbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
+    rbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawOutSpeed, m_AlgaeGrabber));
+    lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
+    lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
+    aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    aButton2.onTrue(new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem));
+    bButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    bButton2.onTrue(new setCoralHeight(Constants.Position.keReef3, m_CoralSubsystem));
+    yButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    yButton2.onTrue(new setCoralHeight(Constants.Position.keReef4, m_CoralSubsystem));
+    xButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
+    xButton2.onTrue(new setCoralHeight(Constants.Position.keReef2, m_CoralSubsystem));
+    backButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem));
+    backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
+    startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
+    startButton2.onTrue(new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem));
+    rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
+    rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
+    //need to create  a button binding which reverses the climb
+    
   }
   
   @Override

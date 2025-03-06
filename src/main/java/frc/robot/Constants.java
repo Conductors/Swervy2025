@@ -50,7 +50,7 @@ public final class Constants {
     public static final double KpWrist = 1;
 
     public static enum Position {
-        keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, kNumOfPosition       //must keep this order for setpoint arrays
+        keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, keCoralStation, kNumOfPosition       //must keep this order for setpoint arrays
     };
 
     public static enum tiltPosition {
@@ -59,19 +59,20 @@ public final class Constants {
 
     public static final class csConstants {
         public static final double[] k_ElevatorHeight = {
-            2,      //keStow
+            3.13,      //keStow
             4,      //keProcessor
-            6,      //keReef1
+            2.68,      //keReef1
             8,      //keReef2
             10,     //keReef3
             12,     //keReef4
-            14      //keGround
+            14,     //keGround
+            16,     //Coral Station
         };
 
         public static final double[] k_tiltAngleSetpoint = {
-            0,      //keStow
+            5.64,      //keStow
             2,      //keLoad
-            4       //keScore
+            6.16       //keScore
         };
     }
 
@@ -86,8 +87,8 @@ public final class Constants {
         public static final double k_WristEncOffset = 0;
 
         public static final double[] k_WristAngleSetpoint = {
-            2,      //keStow
-            4,      //keProcessor
+            5.64,      //keStow
+            6.16,      //keProcessor
             6,      //keReef1
             8,      //keReef2
             10,     //keReef3
@@ -95,8 +96,8 @@ public final class Constants {
             14      //keGround
         };
         public static final double[] k_CraneAngleSetpoint = {
-            1,      //keStow
-            3,      //keProcessor
+            3.13,      //keStow
+            2.68,      //keProcessor
             5,      //keReef1
             7,      //keReef2
             9,      //keReef3

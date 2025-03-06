@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.climbCage;
 
@@ -28,19 +29,23 @@ public class cageClimber extends SubsystemBase {
       cageConfig.idleMode(IdleMode.kBrake);
     cageWinch.configure(cageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
-    setDefaultCommand(new climbCage(false, this));
+    //setDefaultCommand(new climbCage(false, this));
   }
 
   @Override
   public void periodic() {
     //periodic stuff for cageClimber
     cageWinch.set(winchSpeed);
+    SmartDashboard.putNumber("winchSpeed", winchSpeed);
 
   }
 
-  public void climb(boolean climbing) {
+  public void climb(boolean climbing, boolean isUp) {
     if(climbing) {
-      winchSpeed = .5;
+      if(isUp)
+      { winchSpeed = -5; } 
+      else 
+      { winchSpeed = .5; }
     }
     else 
     {
