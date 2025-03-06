@@ -31,7 +31,10 @@ Conductors 4580 Swerve Bot for 2025
 - Set up Github
 
 
-
+FR:  .264
+RL:  .451
+BR:  .284
+BL:  .164
 
 //spin error
 ﻿﻿﻿﻿﻿﻿﻿ thetaCmd-0.015670636734688825 ﻿

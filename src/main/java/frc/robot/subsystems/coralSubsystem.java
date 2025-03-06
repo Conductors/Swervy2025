@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -88,23 +89,30 @@ public class coralSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-      m_ActualHeightA   = m_ElevatorEncA.getPosition();
-      m_ActualHeightB   = m_ElevatorEncB.getPosition();
-      m_ActualTiltAngle = m_tiltEncoder.get();
+        m_ActualHeightA   = m_ElevatorEncA.getPosition();
+        m_ActualHeightB   = m_ElevatorEncB.getPosition();
+        m_ActualTiltAngle = m_tiltEncoder.get();
       
-      elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
-                                        -elevatorMaxMotorSpeed,
-                                        elevatorMaxMotorSpeed));    //need to check motor direction
-      elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
-                                        -elevatorMaxMotorSpeed,
-                                        elevatorMaxMotorSpeed));
+        //elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
+        //                                  -elevatorMaxMotorSpeed,
+        //                                  elevatorMaxMotorSpeed));    //need to check motor direction
+        //elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
+        //                                  -elevatorMaxMotorSpeed,
+        //                                  elevatorMaxMotorSpeed));
                                         
-      gateMotor.set(m_desiredGatePos);
+        //gateMotor.set(m_desiredGatePos);
     
-      tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
-                                        -tiltMotorMaxSPeed,
-                                        tiltMotorMaxSPeed));
+        //tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
+        //                                  -tiltMotorMaxSPeed,
+        //                                  tiltMotorMaxSPeed));
   
+        //Publish Stuff to Dashboard
+        SmartDashboard.putNumber("ElHeightDes", m_DesiredHeight);
+        SmartDashboard.putNumber("ElHeightAct_A", m_ActualHeightA);
+        SmartDashboard.putNumber("ElHeightAct_B", m_ActualHeightB);
+        SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
+        SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
+        SmartDashboard.putNumber("DesiredGatepPos", m_desiredGatePos);
     }
 
     public void setDesiredHeight(double height) {

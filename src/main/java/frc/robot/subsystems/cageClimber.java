@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.climbCage;
 
@@ -35,6 +36,9 @@ public class cageClimber extends SubsystemBase {
   public void periodic() {
     //periodic stuff for cageClimber
     cageWinch.set(winchSpeed);
+
+    //Publish Stuff to Dashboard
+    SmartDashboard.putNumber("Winch Speed", winchSpeed);
 
   }
 
