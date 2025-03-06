@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -106,6 +107,13 @@ public class coralSubsystem extends SubsystemBase {
                                         -tiltMotorMaxSPeed,
                                         tiltMotorMaxSPeed));
   */
+        //Publish Stuff to Dashboard
+        SmartDashboard.putNumber("ElHeightDes", m_DesiredHeight);
+        SmartDashboard.putNumber("ElHeightAct_A", m_ActualHeightA);
+        SmartDashboard.putNumber("ElHeightAct_B", m_ActualHeightB);
+        SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
+        SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
+        SmartDashboard.putNumber("DesiredGatepPos", m_desiredGatePos);
     }
 
     public void setDesiredHeight(double height) {

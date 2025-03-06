@@ -38,6 +38,9 @@ public class cageClimber extends SubsystemBase {
     cageWinch.set(winchSpeed);
     SmartDashboard.putNumber("winchSpeed", winchSpeed);
 
+    //Publish Stuff to Dashboard
+    SmartDashboard.putNumber("Winch Speed", winchSpeed);
+
   }
 
   public void climb(boolean climbing, boolean isUp) {

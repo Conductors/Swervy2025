@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.setClawSpeed;
@@ -84,6 +85,10 @@ public class algaeGrabber extends SubsystemBase {
     actualCraneAngle = (m_CraneEncoder.get()-Constants.aGConstants.k_CraneEncOffset)*2*Math.PI;
     actualWristAngle = (m_WristEncoder.get()-Constants.aGConstants.k_WristEncOffset)*2*Math.PI;
 
+    //Publish Algae Grabber STuff to the Dashboard
+    SmartDashboard.putNumber("CraneAngle", actualCraneAngle);
+    SmartDashboard.putNumber("WristAngle", actualWristAngle);
+    SmartDashboard.putNumber("ClawSpeed", desiredClawSpeed);
     
     //wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
     //craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
