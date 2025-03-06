@@ -42,6 +42,7 @@ public class coralSubsystem extends SubsystemBase {
     private double m_ActualHeightB = 0;
 
 
+
     private ProfiledPIDController m_elevatorPIDA;
     private ProfiledPIDController m_elevatorPIDB;
     private ProfiledPIDController m_tiltMotorPID;
@@ -89,23 +90,23 @@ public class coralSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_ActualHeightA   = m_ElevatorEncA.getPosition();
-        m_ActualHeightB   = m_ElevatorEncB.getPosition();
-        m_ActualTiltAngle = m_tiltEncoder.get();
-      
-        //elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
-        //                                  -elevatorMaxMotorSpeed,
-        //                                  elevatorMaxMotorSpeed));    //need to check motor direction
-        //elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
-        //                                  -elevatorMaxMotorSpeed,
-        //                                  elevatorMaxMotorSpeed));
+      m_ActualHeightA   = m_ElevatorEncA.getPosition();
+      m_ActualHeightB   = m_ElevatorEncB.getPosition();
+      m_ActualTiltAngle = m_tiltEncoder.get();
+
+     /* elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
+                                        -elevatorMaxMotorSpeed,
+                                        elevatorMaxMotorSpeed));    //need to check motor direction
+      elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
+                                        -elevatorMaxMotorSpeed,
+                                        elevatorMaxMotorSpeed));
                                         
         //gateMotor.set(m_desiredGatePos);
     
         //tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
         //                                  -tiltMotorMaxSPeed,
         //                                  tiltMotorMaxSPeed));
-  
+  */
         //Publish Stuff to Dashboard
         SmartDashboard.putNumber("ElHeightDes", m_DesiredHeight);
         SmartDashboard.putNumber("ElHeightAct_A", m_ActualHeightA);
@@ -134,6 +135,10 @@ public class coralSubsystem extends SubsystemBase {
         return m_desiredTiltAngle;
     }
 
+    public double getActualTiltAngle() {
+        return m_ActualTiltAngle;
+      }
+      
     public void closeGate() {
         m_desiredGatePos = gateMotorClosePos;
     }

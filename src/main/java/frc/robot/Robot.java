@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
   private final Joystick m_joystick = new Joystick(2);
 
   private double[] driveInputs = {0,0,0};  
-  private boolean isJoystick = false;
+  private boolean isHighGear = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
@@ -152,7 +152,7 @@ public class Robot extends TimedRobot {
 
     /* Button Triggers */
     //Mode Button toggles joystick vs. controller driving
-    backButton.onTrue(toggleJoystick());   
+    backButton.onTrue(shiftGears());   
 
     //X Button sets Crane Position to "Processor"
     //xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
@@ -201,53 +201,59 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     publishToDashboard();
     //m_swerve.publishToDashboard();
-    driveWithJoystick(false);
+    //switchGears(false);
     m_swerve.updateOdometry();
 
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_swerve.m_odometry.getPoseMeters());
+ 
+    if (isHighGear) {
+      final var xSpeed =
+      -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
+        * Constants.kMaxRobotSpeed;
+  SmartDashboard.putNumber("xSpeed", xSpeed);
 
+      final var ySpeed =
+      -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+        * Constants.kMaxRobotSpeed;
+  SmartDashboard.putNumber("ySpeed", ySpeed);
 
+      final var rot =
+      -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+        * Constants.kMaxRobotAngularSpeed;
+  SmartDashboard.putNumber("rot", rot);
 
+  m_swerve.drive(xSpeed, ySpeed, rot, isHighGear, getPeriod());    
 
-  }
-
-  public void driveWithJoystick(boolean fieldRelative) {
-    
-    if (isJoystick) {
-        driveInputs[0] = m_joystick.getX();
-        driveInputs[1] = m_joystick.getY();
-        driveInputs[2]= m_joystick.getZ();
     } else {
-        driveInputs[0] = m_controller.getLeftX();
-        driveInputs[1] = m_controller.getLeftY();
-        driveInputs[2] = m_controller.getRightX();
+      final var xSpeed =
+      -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
+        * Constants.kMaxRobotSpeedLowGear;
+  SmartDashboard.putNumber("xSpeed", xSpeed);
+
+      final var ySpeed =
+      -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+        * Constants.kMaxRobotSpeedLowGear;
+  SmartDashboard.putNumber("ySpeed", ySpeed);
+
+      final var rot =
+      -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+        * Constants.kMaxRobotAngularSpeed;
+  SmartDashboard.putNumber("rot", rot);
+
+  m_swerve.drive(xSpeed, ySpeed, rot, false, getPeriod());
     }
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[1], 0.1))
-          * Constants.kMaxRobotSpeed;
-    SmartDashboard.putNumber("xSpeed", xSpeed);
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(driveInputs[0], 0.1))
-          * Constants.kMaxRobotSpeed;
-    SmartDashboard.putNumber("ySpeed", ySpeed);
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(driveInputs[2], 0.1))
-          * Constants.kMaxRobotAngularSpeed;
-    SmartDashboard.putNumber("rot", rot);
-  
-    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, getPeriod());    
   }
 
 
@@ -257,7 +263,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller Left Y", m_controller.getLeftY());
     SmartDashboard.putNumber("Controller Right X", m_controller.getRightX());
     SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getRotation2d().getDegrees());
-    SmartDashboard.putBoolean("Joystick Enabled", isJoystick);
+    SmartDashboard.putBoolean("High Gear Enabled", isHighGear);
+
+    SmartDashboard.putNumber("Crane Angle", m_AlgaeGrabber.getActualCraneAngle());
+    SmartDashboard.putNumber("Wrist Angle", m_AlgaeGrabber.getActualWristAngle());
+
+    SmartDashboard.putNumber("Tilt Angle", m_CoralSubsystem.getActualTiltAngle());
     
   }
 
@@ -447,9 +458,9 @@ public Command takeAlgae(Position algaePos) {
   );
 }
 
-  public Command toggleJoystick() {
+  public Command shiftGears() {
     return Commands.sequence(
-        new InstantCommand(() -> isJoystick=!isJoystick)
+        new InstantCommand(() -> isHighGear=!isHighGear)
     );
   }
 
