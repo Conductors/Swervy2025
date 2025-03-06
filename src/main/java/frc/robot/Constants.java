@@ -8,6 +8,7 @@ public final class Constants {
 
     //Drivetrain (whole robot) constants
     public static final double kMaxRobotSpeed = 3; // meters per second
+    public static final double kMaxRobotSpeedLowGear = 1;
     public static final double kMaxRobotAngularSpeed = Math.PI; // 1/2 rotation per second = Pi
     public static final double kWheelRadius = 0.0508;   //4" mk4 wheels
     public static final double kGearRatio = 8.1;  //actual 8.1
@@ -79,8 +80,8 @@ public final class Constants {
         public static final int k_WristMotorPort = 5;
         public static final int k_ClawMotorPortUpper = 7;
         public static final int k_ClawMotorPortLower = 6;
-        public static final int k_CraneEncPort = 7;
-        public static final int k_WristEncPort = 8;
+        public static final int k_CraneEncPort = 6;
+        public static final int k_WristEncPort = 7;
         public static final double k_CraneEncOffset = 0;
         public static final double k_WristEncOffset = 0;
 
