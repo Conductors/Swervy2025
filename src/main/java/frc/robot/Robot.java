@@ -63,6 +63,8 @@ public class Robot extends TimedRobot {
   private Trigger backButton2 = new JoystickButton(m_controller2, XboxController.Button.kBack.value);
   private Trigger lbButton2   = new JoystickButton(m_controller2, XboxController.Button.kLeftBumper.value);
   private Trigger rbButton2   = new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
+  private Trigger lBTrigger2   = new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
+  private Trigger rBTrigger2   = new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
 
   private final Joystick m_joystick = new Joystick(2);
 
@@ -170,6 +172,7 @@ public class Robot extends TimedRobot {
     xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
     lbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
     rbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawOutSpeed, m_AlgaeGrabber));
+    
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
     aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
@@ -184,9 +187,11 @@ public class Robot extends TimedRobot {
     backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
     startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
     startButton2.onTrue(new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem));
+    
     rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
     rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
-    //need to create  a button binding which reverses the climb
+    rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber));
+    rBTrigger2.onFalse(new climbCage(false, false, m_CageClimber));
     
   }
   
