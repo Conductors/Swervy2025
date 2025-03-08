@@ -40,7 +40,10 @@ public class coralSubsystem extends SubsystemBase {
     private double elevatorMaxMotorSpeed = 1.0; //speed to lift the motors
     private double m_ActualHeightA = 0;
     private double m_ActualHeightB = 0;
-
+    private double m_HeightOffset = 0;
+    private double m_TiltOffset = 0;
+    private static double m_HeightOffsetStep = .1;
+    private static double m_TiltOffsetStep = .1;
 
 
     private ProfiledPIDController m_elevatorPIDA;
@@ -114,10 +117,12 @@ public class coralSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
         SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
         SmartDashboard.putNumber("DesiredGatepPos", m_desiredGatePos);
+        SmartDashboard.putNumber("HeightOffset", m_HeightOffset);
+        SmartDashboard.putNumber("TiltOffset", m_TiltOffset);
     }
 
     public void setDesiredHeight(double height) {
-        m_DesiredHeight = height;
+        m_DesiredHeight = height + m_HeightOffset;
     }
 
     public double getDesiredHeight() {
@@ -128,7 +133,7 @@ public class coralSubsystem extends SubsystemBase {
      *@param angle Angle in radians
      */
     public void setDesiredTiltAngle(double angle) {
-        m_desiredTiltAngle = angle;
+        m_desiredTiltAngle = angle + m_TiltOffset;
     }
 
     public double getDesiredTiltAngle() {
@@ -151,6 +156,24 @@ public class coralSubsystem extends SubsystemBase {
         return m_desiredGatePos;
     }
 
+    // Public functions to all D-Pad to adjust the offset of the Elevator Height
+    public void incHeightOffset() {
+        m_HeightOffset = m_HeightOffset + m_HeightOffsetStep;
+    }
+
+    public void decHeightOffset() {
+        m_HeightOffset = m_HeightOffset + m_HeightOffsetStep;
+    }
+
+    // Public functions to all D-Pad to adjust the offset of the Mailbox Tilt
+    public void incTiltOffset() {
+        m_TiltOffset = m_TiltOffset + m_TiltOffsetStep;
+    }
+
+    public void decTiltOffset() {
+        m_TiltOffset = m_TiltOffset + m_TiltOffsetStep;
+    }
+    
     
 }
 
