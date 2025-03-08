@@ -24,19 +24,19 @@ public class coralSubsystem extends SubsystemBase {
 
     private DutyCycleEncoder m_tiltEncoder;
     private int tiltEncoderPort = 5;
-    private double m_desiredTiltAngle = 0;
+    private double m_desiredTiltAngle = Constants.csConstants.k_tiltAngleSetpoint[0];
     private double tiltMotorMaxSPeed = 1; //speed to spin the tilt motor
     private double m_ActualTiltAngle = 0;
 
     private double m_desiredGatePos = 0;
-    private final double gateMotorOpenPos = .5;
+    private final double gateMotorOpenPos = 1;
     private final double gateMotorClosePos = 0;
 
 
     private RelativeEncoder m_ElevatorEncA;
     private RelativeEncoder m_ElevatorEncB;
     private double c_ElevatorBOffset = 0; //+add (Subtract) this from the Elevator B desired goal
-    private double m_DesiredHeight = 0;
+    private double m_DesiredHeight = Constants.csConstants.k_ElevatorHeight[0];
     private double elevatorMaxMotorSpeed = 1.0; //speed to lift the motors
     private double m_ActualHeightA = 0;
     private double m_ActualHeightB = 0;
@@ -105,17 +105,17 @@ public class coralSubsystem extends SubsystemBase {
                                         elevatorMaxMotorSpeed));
     */                                    
       gateMotor.set(m_desiredGatePos);
-  /*  
-      tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
+    
+      /*tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
                                         -tiltMotorMaxSPeed,
                                         tiltMotorMaxSPeed));
-  */
+        */
         //Publish Stuff to Dashboard
         SmartDashboard.putNumber("ElHeightDes", m_DesiredHeight);
         SmartDashboard.putNumber("ElHeightAct_A", m_ActualHeightA);
         SmartDashboard.putNumber("ElHeightAct_B", m_ActualHeightB);
         SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
-        SmartDashboard.putNumber("DesiredTiltAngle", m_desiredTiltAngle);
+        SmartDashboard.putNumber("ActualTiltAngle", m_ActualTiltAngle);
         SmartDashboard.putNumber("DesiredGatepPos", m_desiredGatePos);
         SmartDashboard.putNumber("HeightOffset", m_HeightOffset);
         SmartDashboard.putNumber("TiltOffset", m_TiltOffset);
@@ -162,7 +162,7 @@ public class coralSubsystem extends SubsystemBase {
     }
 
     public void decHeightOffset() {
-        m_HeightOffset = m_HeightOffset + m_HeightOffsetStep;
+        m_HeightOffset = m_HeightOffset - m_HeightOffsetStep;
     }
 
     // Public functions to all D-Pad to adjust the offset of the Mailbox Tilt
@@ -171,7 +171,7 @@ public class coralSubsystem extends SubsystemBase {
     }
 
     public void decTiltOffset() {
-        m_TiltOffset = m_TiltOffset + m_TiltOffsetStep;
+        m_TiltOffset = m_TiltOffset - m_TiltOffsetStep;
     }
     
     

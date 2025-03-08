@@ -42,12 +42,12 @@ public final class Constants {
     public static final double kBR_TurnEncoderChannel = 3;
     public static final double kBR_TurnEncoderOffset = 0.336;
 
-    public static final double KpCrane = 1;
+    public static final double KpCrane = 0.5;
     public static final double CraneMaxAccel = Math.PI;
     public static final double CraneMaxVelocity = Math.PI;
     public static final double WristMaxAccel = Math.PI;
     public static final double WristMaxVelocity = Math.PI;
-    public static final double KpWrist = 1;
+    public static final double KpWrist = 0.1;
 
     public static enum Position {
         keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, keCoralStation, kNumOfPosition       //must keep this order for setpoint arrays
@@ -59,20 +59,20 @@ public final class Constants {
 
     public static final class csConstants {
         public static final double[] k_ElevatorHeight = {
-            5.38,      //keStow   
-            4,         //keProcessor
-            2.68,      //keReef1
-            8,        //keReef2
-            10,       //keReef3
-            12,       //keReef4
-            14,       //keGround
-            16,       //Coral Station
+            0,      //keStow   
+            -10,         //keProcessor
+            -30,      //keReef1
+            -50,        //keReef2
+            -70,       //keReef3
+            -100,       //keReef4
+            0,       //keGround
+            -10,       //Coral Station
         };
 
         public static final double[] k_tiltAngleSetpoint = {
-            0.47,      //keStow  
-            2,         //keLoad
-            6.16       //keScore
+            0,      //keStow  
+            0.5,         //keLoad
+            0.75       //keScore
         };
     }
 
@@ -87,22 +87,22 @@ public final class Constants {
         public static final double k_WristEncOffset = 0;
 
         public static final double[] k_WristAngleSetpoint = {
-            5.64,      //keStow
-            6.16,      //keProcessor
-            6,      //keReef1
-            8,      //keReef2
-            10,     //keReef3
-            12,     //keReef4
-            14      //keGround
+            6.1,      //keStow
+            5.5,      //keProcessor
+            5,      //keReef1
+            5,      //keReef2
+            4,     //keReef3
+            4,     //keReef4
+            6.1      //keGround
         };
         public static final double[] k_CraneAngleSetpoint = {
-            3.13,      //keStow
-            2.68,      //keProcessor
-            5,      //keReef1
-            7,      //keReef2
-            9,      //keReef3
-            11,     //keReef4
-            13      //keGround
+            3.1,      //keStow
+            2,      //keProcessor
+            1,      //keReef1
+            1,      //keReef2
+            0.5,      //keReef3
+            0.5,     //keReef4
+            3.1      //keGround
         };  
 
         public static final double k_clawInSpeed = .5;
@@ -135,9 +135,9 @@ public final class Constants {
 
       public static final class coralConstants {
 
-        public static final double kP_elevatorA = 1;
-        public static final double kP_elevatorB = 1;
-        public static final double kP_tilt      = 1;
+        public static final double kP_elevatorA = 0.005;
+        public static final double kP_elevatorB = 0.005;
+        public static final double kP_tilt      = 0.5;
         
         public static final double elevatorMaxVelocity = 1;
         public static final double elevatorMaxAccel = 1;

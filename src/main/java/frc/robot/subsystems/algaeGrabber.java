@@ -24,14 +24,14 @@ public class algaeGrabber extends SubsystemBase {
   private DutyCycleEncoder m_CraneEncoder;
   private DutyCycleEncoder m_WristEncoder;
   
-  private double desiredCraneAngle = 0;
-  private double desiredWristAngle = 0;
+  private double desiredCraneAngle = Constants.aGConstants.k_CraneAngleSetpoint[0];
+  private double desiredWristAngle = Constants.aGConstants.k_WristAngleSetpoint[0];
   private double actualCraneAngle = 0;
   private double actualWristAngle = 0;
   private double CraneAngleOffset = 0;
   private double WristAngleOffset = 0;
-  private double CraneAngleStep = 0;
-  private double WristAngleStep = 0;
+  private double CraneAngleStep = 0.1;
+  private double WristAngleStep = 0.1;
   
   private final ProfiledPIDController m_CranePIDController;
   private final ProfiledPIDController m_WristPIDController;
@@ -81,7 +81,7 @@ public class algaeGrabber extends SubsystemBase {
     m_WristPIDController.setTolerance(.05);  //sets the tolerance for the PID controller, in meters
     
     // Set the default command for a subsystem here. (set the claw speed to 0)
-    setDefaultCommand(new setClawSpeed(0, this));
+    //setDefaultCommand(new setClawSpeed(0, this));
   }
 
   @Override
@@ -93,12 +93,17 @@ public class algaeGrabber extends SubsystemBase {
     SmartDashboard.putNumber("CraneAngle", actualCraneAngle);
     SmartDashboard.putNumber("WristAngle", actualWristAngle);
     SmartDashboard.putNumber("ClawSpeed", desiredClawSpeed);
+    SmartDashboard.putNumber("CraneOffset", CraneAngleOffset);
+    SmartDashboard.putNumber("WristOffset", WristAngleOffset);
+    SmartDashboard.putNumber("Desired Crane Angle", desiredCraneAngle);
+    SmartDashboard.putNumber("Desired Wrist Angle", desiredWristAngle);
+    SmartDashboard.putNumber("CraneMotorActual", craneMotor.getOutputCurrent());
     
-    //wristMotor.set(m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
-    //craneMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
+    craneMotor.set(-m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
+    wristMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
 
-    //clawMotorUpper.set(desiredClawSpeed);
-    //clawMotorLower.set(desiredClawSpeed);
+    clawMotorUpper.set(desiredClawSpeed);
+    clawMotorLower.set(-desiredClawSpeed);
 
   }
 
@@ -143,11 +148,11 @@ public class algaeGrabber extends SubsystemBase {
     }
   
   public void IncWristAngle() {
-    CraneAngleOffset = CraneAngleOffset + CraneAngleStep;
+    WristAngleOffset = WristAngleOffset + WristAngleStep;
     }
     
   public void DecWristAngle() {
-    CraneAngleOffset = CraneAngleOffset - CraneAngleStep;
+    WristAngleOffset = WristAngleOffset - WristAngleStep;
     }
 
 }

@@ -166,38 +166,40 @@ public class Robot extends TimedRobot {
 
     /* Button Triggers */
     //Mode Button toggles joystick vs. controller driving
-    backButton.onTrue(shiftGears());   
-
-    //X Button sets Crane Position to "Processor"
-    //xButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
-    //yButton.whileTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
-
-    //Pressing A button sends robot forward, releasing sends it back
-    //aButton.onTrue(new driveStraightPID(.25, getPeriod(), m_swerve));
-    //aButton.onFalse(new driveStraightPID(-.25, getPeriod(), m_swerve));
+    backButton.onTrue(shiftGears()); 
     aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
     startButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
     bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
     yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
     xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
-    lBTrigger.onTrue(new setClawSpeed(m_controller.getLeftTriggerAxis(), m_AlgaeGrabber));
-    rBTrigger.onTrue(new setClawSpeed(-m_controller.getRightTriggerAxis(), m_AlgaeGrabber));    //check - out is negative
-    
+    lBTrigger.whileTrue(new setClawSpeed(0.5, m_AlgaeGrabber))
+              .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
+    rBTrigger.whileTrue(new setClawSpeed(-m_controller.getRightTriggerAxis(), m_AlgaeGrabber))
+              .onFalse(new setClawSpeed(0, m_AlgaeGrabber));    //check - out is negative
+    lbButton.whileTrue(new setClawSpeed(0.5, m_AlgaeGrabber))
+              .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
+    rbButton.whileTrue(new setClawSpeed(-0.5, m_AlgaeGrabber))
+              .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
 
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
     aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
     aButton2.onTrue(new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem));
+    aButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     bButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
     bButton2.onTrue(new setCoralHeight(Constants.Position.keReef3, m_CoralSubsystem));
+    bButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     yButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
     yButton2.onTrue(new setCoralHeight(Constants.Position.keReef4, m_CoralSubsystem));
+    yButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     xButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
     xButton2.onTrue(new setCoralHeight(Constants.Position.keReef2, m_CoralSubsystem));
+    xButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     backButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem));
     backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
     startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
     startButton2.onTrue(new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem));
+    startButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     
     rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
     rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
@@ -269,8 +271,9 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Crane Angle", m_AlgaeGrabber.getActualCraneAngle());
     SmartDashboard.putNumber("Wrist Angle", m_AlgaeGrabber.getActualWristAngle());
-
     SmartDashboard.putNumber("Tilt Angle", m_CoralSubsystem.getActualTiltAngle());
+
+    SmartDashboard.putNumber("RightTrigger", m_controller.getRightTriggerAxis());
     
   }
 
