@@ -190,8 +190,8 @@ public class Robot extends TimedRobot {
     
     rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
     rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
-    rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber));
-    rBTrigger2.onFalse(new climbCage(false, false, m_CageClimber));
+    backButton.whileTrue(new climbCage(true, false, m_CageClimber));
+    backButton.onFalse(new climbCage(false, false, m_CageClimber));
     
   }
   
