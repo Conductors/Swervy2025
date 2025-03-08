@@ -45,31 +45,31 @@ import frc.robot.subsystems.coralSubsystem;
 public class Robot extends TimedRobot {
   private final CommandXboxController m_controller = new CommandXboxController(0);
   private final CommandXboxController m_controller2 = new CommandXboxController(1);
-  private Trigger yButton     = m_controller.y(); //new JoystickButton(m_controller, XboxController.Button.kY.value);
-  private Trigger xButton     = m_controller.x(); //new JoystickButton(m_controller, XboxController.Button.kX.value);
-  private Trigger aButton     = m_controller.a(); //new JoystickButton(m_controller, XboxController.Button.kA.value);
-  private Trigger bButton     = m_controller.b(); //new JoystickButton(m_controller, XboxController.Button.kB.value);
-  private Trigger startButton = m_controller.start(); //new JoystickButton(m_controller, XboxController.Button.kStart.value);
+  private Trigger yButton     = m_controller.y(); 
+  private Trigger xButton     = m_controller.x(); 
+  private Trigger aButton     = m_controller.a(); 
+  private Trigger bButton     = m_controller.b(); 
+  private Trigger startButton = m_controller.start(); 
   private Trigger backButton  = m_controller.back();
   private Trigger lbButton     = m_controller.leftBumper();
-  private Trigger rbButton    = m_controller.rightBumper(); //new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
-  private Trigger lBTrigger   = m_controller.leftTrigger(0.1); //new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
-  private Trigger rBTrigger   = m_controller.rightTrigger(.1); //new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
+  private Trigger rbButton    = m_controller.rightBumper(); 
+  private Trigger lBTrigger   = m_controller.leftTrigger(0.1); 
+  private Trigger rBTrigger   = m_controller.rightTrigger(.1); 
   private Trigger povUp       = m_controller.povUp();
   private Trigger povDown     = m_controller.povDown();
   private Trigger povLeft     = m_controller.povLeft();
   private Trigger povRight    = m_controller.povRight();
 
-  private Trigger yButton2    = m_controller2.y(); //new JoystickButton(m_controller2, XboxController.Button.kY.value);
-  private Trigger xButton2    = m_controller2.x(); //new JoystickButton(m_controller2, XboxController.Button.kX.value);
-  private Trigger aButton2    = m_controller2.a(); //new JoystickButton(m_controller2, XboxController.Button.kA.value);
-  private Trigger bButton2    = m_controller2.b(); //new JoystickButton(m_controller2, XboxController.Button.kB.value);
-  private Trigger startButton2= m_controller2.start(); //new JoystickButton(m_controller2, XboxController.Button.kStart.value);
-  private Trigger backButton2 = m_controller2.back(); //new JoystickButton(m_controller2, XboxController.Button.kBack.value);
-  private Trigger lbButton2   = m_controller2.leftBumper(); //new JoystickButton(m_controller2, XboxController.Button.kLeftBumper.value);
-  private Trigger rbButton2   = m_controller2.rightBumper(); //new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
-  private Trigger lBTrigger2  = m_controller2.leftTrigger(0.1); //new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
-  private Trigger rBTrigger2  = m_controller2.rightTrigger(.1); //new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
+  private Trigger yButton2    = m_controller2.y(); 
+  private Trigger xButton2    = m_controller2.x(); 
+  private Trigger aButton2    = m_controller2.a(); 
+  private Trigger bButton2    = m_controller2.b(); 
+  private Trigger startButton2= m_controller2.start(); 
+  private Trigger backButton2 = m_controller2.back(); 
+  private Trigger lbButton2   = m_controller2.leftBumper(); 
+  private Trigger rbButton2   = m_controller2.rightBumper(); 
+  private Trigger lBTrigger2  = m_controller2.leftTrigger(0.1); 
+  private Trigger rBTrigger2  = m_controller2.rightTrigger(.1); 
   private Trigger povUp2      = m_controller2.povUp();
   private Trigger povDown2    = m_controller2.povDown();
   private Trigger povLeft2    = m_controller2.povLeft();
@@ -180,9 +180,10 @@ public class Robot extends TimedRobot {
     bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
     yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
     xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
-    lbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawInSpeed, m_AlgaeGrabber));
-    rbButton.onTrue(new setClawSpeed(Constants.aGConstants.k_clawOutSpeed, m_AlgaeGrabber));
+    lBTrigger.onTrue(new setClawSpeed(m_controller.getLeftTriggerAxis(), m_AlgaeGrabber));
+    rBTrigger.onTrue(new setClawSpeed(-m_controller.getRightTriggerAxis(), m_AlgaeGrabber));    //check - out is negative
     
+
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
     aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
@@ -200,8 +201,8 @@ public class Robot extends TimedRobot {
     
     rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
     rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
-    backButton.whileTrue(new climbCage(true, false, m_CageClimber));
-    backButton.onFalse(new climbCage(false, false, m_CageClimber));
+    rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber));
+    rBTrigger2.onFalse(new climbCage(false, false, m_CageClimber));
     
   }
   
