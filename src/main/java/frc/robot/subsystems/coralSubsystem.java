@@ -25,7 +25,7 @@ public class coralSubsystem extends SubsystemBase {
     private DutyCycleEncoder m_tiltEncoder;
     private int tiltEncoderPort = 5;
     private double m_desiredTiltAngle = 0;
-    private double tiltMotorMaxSPeed = 1.; //speed to spin the tilt motor
+    private double tiltMotorMaxSPeed = 1; //speed to spin the tilt motor
     private double m_ActualTiltAngle = 0;
 
     private double m_desiredGatePos = 0;
