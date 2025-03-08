@@ -11,10 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.setCranePosition;
 import frc.robot.commands.setGateState;
 import frc.robot.Constants.Position;
@@ -44,31 +43,39 @@ import frc.robot.subsystems.cageClimber;
 import frc.robot.subsystems.coralSubsystem;
 
 public class Robot extends TimedRobot {
-  private final XboxController m_controller = new XboxController(0);
-  private final XboxController m_controller2 = new XboxController(1);
-  private Trigger yButton     = new JoystickButton(m_controller, XboxController.Button.kY.value);
-  private Trigger xButton     = new JoystickButton(m_controller, XboxController.Button.kX.value);
-  private Trigger aButton     = new JoystickButton(m_controller, XboxController.Button.kA.value);
-  private Trigger bButton     = new JoystickButton(m_controller, XboxController.Button.kB.value);
-  private Trigger startButton = new JoystickButton(m_controller, XboxController.Button.kStart.value);
-  private Trigger backButton  = new JoystickButton(m_controller, XboxController.Button.kBack.value);
-  private Trigger lbButton    = new JoystickButton(m_controller, XboxController.Button.kLeftBumper.value);
-  private Trigger rbButton    = new JoystickButton(m_controller, XboxController.Button.kRightBumper.value);
+  private final CommandXboxController m_controller = new CommandXboxController(0);
+  private final CommandXboxController m_controller2 = new CommandXboxController(1);
+  private Trigger yButton     = m_controller.y(); //new JoystickButton(m_controller, XboxController.Button.kY.value);
+  private Trigger xButton     = m_controller.x(); //new JoystickButton(m_controller, XboxController.Button.kX.value);
+  private Trigger aButton     = m_controller.a(); //new JoystickButton(m_controller, XboxController.Button.kA.value);
+  private Trigger bButton     = m_controller.b(); //new JoystickButton(m_controller, XboxController.Button.kB.value);
+  private Trigger startButton = m_controller.start(); //new JoystickButton(m_controller, XboxController.Button.kStart.value);
+  private Trigger backButton  = m_controller.back();
+  private Trigger lbButton     = m_controller.leftBumper();
+  private Trigger rbButton    = m_controller.rightBumper(); //new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
+  private Trigger lBTrigger   = m_controller.leftTrigger(0.1); //new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
+  private Trigger rBTrigger   = m_controller.rightTrigger(.1); //new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
+  private Trigger povUp       = m_controller.povUp();
+  private Trigger povDown     = m_controller.povDown();
+  private Trigger povLeft     = m_controller.povLeft();
+  private Trigger povRight    = m_controller.povRight();
 
-  private Trigger yButton2    = new JoystickButton(m_controller2, XboxController.Button.kY.value);
-  private Trigger xButton2    = new JoystickButton(m_controller2, XboxController.Button.kX.value);
-  private Trigger aButton2    = new JoystickButton(m_controller2, XboxController.Button.kA.value);
-  private Trigger bButton2    = new JoystickButton(m_controller2, XboxController.Button.kB.value);
-  private Trigger startButton2= new JoystickButton(m_controller2, XboxController.Button.kStart.value);
-  private Trigger backButton2 = new JoystickButton(m_controller2, XboxController.Button.kBack.value);
-  private Trigger lbButton2   = new JoystickButton(m_controller2, XboxController.Button.kLeftBumper.value);
-  private Trigger rbButton2   = new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
-  private Trigger lBTrigger2   = new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
-  private Trigger rBTrigger2   = new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
+  private Trigger yButton2    = m_controller2.y(); //new JoystickButton(m_controller2, XboxController.Button.kY.value);
+  private Trigger xButton2    = m_controller2.x(); //new JoystickButton(m_controller2, XboxController.Button.kX.value);
+  private Trigger aButton2    = m_controller2.a(); //new JoystickButton(m_controller2, XboxController.Button.kA.value);
+  private Trigger bButton2    = m_controller2.b(); //new JoystickButton(m_controller2, XboxController.Button.kB.value);
+  private Trigger startButton2= m_controller2.start(); //new JoystickButton(m_controller2, XboxController.Button.kStart.value);
+  private Trigger backButton2 = m_controller2.back(); //new JoystickButton(m_controller2, XboxController.Button.kBack.value);
+  private Trigger lbButton2   = m_controller2.leftBumper(); //new JoystickButton(m_controller2, XboxController.Button.kLeftBumper.value);
+  private Trigger rbButton2   = m_controller2.rightBumper(); //new JoystickButton(m_controller2, XboxController.Button.kRightBumper.value);
+  private Trigger lBTrigger2  = m_controller2.leftTrigger(0.1); //new JoystickButton(m_controller2, XboxController.Axis.kLeftTrigger.value);
+  private Trigger rBTrigger2  = m_controller2.rightTrigger(.1); //new JoystickButton(m_controller2, XboxController.Axis.kRightTrigger.value);
+  private Trigger povUp2      = m_controller2.povUp();
+  private Trigger povDown2    = m_controller2.povDown();
+  private Trigger povLeft2    = m_controller2.povLeft();
+  private Trigger povRight2   = m_controller2.povRight();
 
-  private final Joystick m_joystick = new Joystick(2);
-
-  private double[] driveInputs = {0,0,0};  
+  
   private boolean isHighGear = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
@@ -111,6 +118,8 @@ public class Robot extends TimedRobot {
     m_AutoChooser.addOption("ScoreCoralTake1Algae", Constants.AutoConstants.kAutoProgram[7]);
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
+
+  
   }
 
   @Override
@@ -123,6 +132,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     
     publisher.set(m_swerve.m_odometry.getPoseMeters());
   }
@@ -216,53 +226,26 @@ public class Robot extends TimedRobot {
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_swerve.m_odometry.getPoseMeters());
  
-    if (isHighGear) {
-      final var xSpeed =
+    //Set the max speed constant to use high (regular) or low speed based on isHighGear
+    double l_MaxSpeed = isHighGear?Constants.kMaxRobotSpeed:Constants.kMaxRobotSpeedLowGear;
+    
+    final var xSpeed =
       -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
-        * Constants.kMaxRobotSpeed;
-  SmartDashboard.putNumber("xSpeed", xSpeed);
+      * l_MaxSpeed;
+    SmartDashboard.putNumber("xSpeed", xSpeed);
 
-      final var ySpeed =
+    final var ySpeed =
       -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
-        * Constants.kMaxRobotSpeed;
-  SmartDashboard.putNumber("ySpeed", ySpeed);
+        * l_MaxSpeed;
+    SmartDashboard.putNumber("ySpeed", ySpeed);
 
-      final var rot =
+    final var rot =
       -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
-        * Constants.kMaxRobotAngularSpeed;
-  SmartDashboard.putNumber("rot", rot);
+        * l_MaxSpeed;
+    SmartDashboard.putNumber("rot", rot);
 
-  m_swerve.drive(xSpeed, ySpeed, rot, isHighGear, getPeriod());    
+    m_swerve.drive(xSpeed, ySpeed, rot, isHighGear, getPeriod());    
 
-    } else {
-      final var xSpeed =
-      -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
-        * Constants.kMaxRobotSpeedLowGear;
-  SmartDashboard.putNumber("xSpeed", xSpeed);
-
-      final var ySpeed =
-      -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
-        * Constants.kMaxRobotSpeedLowGear;
-  SmartDashboard.putNumber("ySpeed", ySpeed);
-
-      final var rot =
-      -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
-        * Constants.kMaxRobotAngularSpeed;
-  SmartDashboard.putNumber("rot", rot);
-
-  m_swerve.drive(xSpeed, ySpeed, rot, false, getPeriod());
-    }
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
   }
 
 
