@@ -204,12 +204,15 @@ public class Robot extends TimedRobot {
     rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber));
     rBTrigger2.onFalse(new climbCage(false, false, m_CageClimber));
 
+    povUp.onTrue(new InstantCommand(() -> m_AlgaeGrabber.IncCraneAngle()));
+    povDown.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecCraneAngle()));
+    povRight.onTrue(new InstantCommand(() -> m_AlgaeGrabber.IncWristAngle()));
+    povLeft.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecCraneAngle()));
+    
     povUp2.onTrue(new InstantCommand(() -> m_CoralSubsystem.incHeightOffset()));
     povDown2.onTrue(new InstantCommand(() -> m_CoralSubsystem.decHeightOffset()));
-    
     povRight2.onTrue(new InstantCommand(() -> m_CoralSubsystem.incTiltOffset()));
     povLeft2.onTrue(new InstantCommand(() -> m_CoralSubsystem.decTiltOffset()));
-
   }
   
   @Override
@@ -460,12 +463,6 @@ public Command takeAlgae(Position algaePos) {
   public Command shiftGears() {
     return Commands.sequence(
         new InstantCommand(() -> isHighGear=!isHighGear)
-    );
-  }
-
-  public Command shiftToLowGear() {
-    return Commands.sequence(
-        new InstantCommand(() -> isHighGear=false)
     );
   }
 

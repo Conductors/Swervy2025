@@ -28,6 +28,10 @@ public class algaeGrabber extends SubsystemBase {
   private double desiredWristAngle = 0;
   private double actualCraneAngle = 0;
   private double actualWristAngle = 0;
+  private double CraneAngleOffset = 0;
+  private double WristAngleOffset = 0;
+  private double CraneAngleStep = 0;
+  private double WristAngleStep = 0;
   
   private final ProfiledPIDController m_CranePIDController;
   private final ProfiledPIDController m_WristPIDController;
@@ -99,11 +103,11 @@ public class algaeGrabber extends SubsystemBase {
   }
 
   public void setDesiredCraneAngle(double angle) {
-    desiredCraneAngle = angle;
+    desiredCraneAngle = angle + CraneAngleOffset;
   }
 
   public void setDesiredWristAngle(double angle) {
-    desiredWristAngle = angle;
+    desiredWristAngle = angle + WristAngleOffset;
   }
 
   public double getDesiredCraneAngle() {
@@ -129,6 +133,21 @@ public class algaeGrabber extends SubsystemBase {
   public double getDesiredClawSpeed() {
     return desiredClawSpeed;
   }
+
+  public void IncCraneAngle() {
+    CraneAngleOffset = CraneAngleOffset + CraneAngleStep;
+    }
+
+  public void DecCraneAngle() {
+    CraneAngleOffset = CraneAngleOffset - CraneAngleStep;
+    }
   
+  public void IncWristAngle() {
+    CraneAngleOffset = CraneAngleOffset + CraneAngleStep;
+    }
+    
+  public void DecWristAngle() {
+    CraneAngleOffset = CraneAngleOffset - CraneAngleStep;
+    }
 
 }
