@@ -59,19 +59,19 @@ public final class Constants {
 
     public static final class csConstants {
         public static final double[] k_ElevatorHeight = {
-            3.13,      //keStow
-            4,      //keProcessor
+            5.38,      //keStow   
+            4,         //keProcessor
             2.68,      //keReef1
-            8,      //keReef2
-            10,     //keReef3
-            12,     //keReef4
-            14,     //keGround
-            16,     //Coral Station
+            8,        //keReef2
+            10,       //keReef3
+            12,       //keReef4
+            14,       //keGround
+            16,       //Coral Station
         };
 
         public static final double[] k_tiltAngleSetpoint = {
-            5.64,      //keStow
-            2,      //keLoad
+            0.47,      //keStow  
+            2,         //keLoad
             6.16       //keScore
         };
     }
