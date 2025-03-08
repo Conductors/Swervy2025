@@ -52,6 +52,8 @@ public class Drivetrain extends SubsystemBase {
 
   public final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
+  private double m_ServeRot = 0;
+
   public final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -80,6 +82,28 @@ public class Drivetrain extends SubsystemBase {
 
     //Create a NamedCommand so that we can use this in the event tag
     NamedCommands.registerCommand("testEvent1", new InstantCommand(() -> System.out.println("PathPlanner Named Command")));
+
+    SmartDashboard.putData("Swerve Drive", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("SwerveDrive");
+
+        builder.addDoubleProperty("Front Left Angle", () -> m_frontLeft.getAdjustedAngle(), null);
+        builder.addDoubleProperty("Front Left Velocity", () -> m_frontLeft.getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Front Right Angle", () -> m_frontRight.getAdjustedAngle(), null);
+        builder.addDoubleProperty("Front Right Velocity", () -> m_frontRight.getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Back Left Angle", () -> m_backLeft.getAdjustedAngle(), null);
+        builder.addDoubleProperty("Back Left Velocity", () -> m_backLeft.getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Back Right Angle", () -> m_backRight.getAdjustedAngle(), null);
+        builder.addDoubleProperty("Back Right Velocity", () -> m_backRight.getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Robot Angle", () -> m_ServeRot, null);
+      }
+    });
+    
   }
 
   /**
@@ -100,12 +124,14 @@ public class Drivetrain extends SubsystemBase {
                         xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getRotation2d().getRadians()))
                     : new ChassisSpeeds(xSpeed, ySpeed, rot),
                 periodSeconds));
-                
+                   
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.kMaxRobotSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+
+    m_ServeRot = rot;          
 
     double[] moduleDesiredStates = {
       swerveModuleStates[0].angle.getDegrees(),
@@ -117,12 +143,15 @@ public class Drivetrain extends SubsystemBase {
       swerveModuleStates[3].angle.getDegrees(),
       swerveModuleStates[3].speedMetersPerSecond
     };
+
     publishToDashboard();
+    
     SmartDashboard.putNumberArray("DesiredStates", moduleDesiredStates);
     SmartDashboard.putNumber("FL_Desired_Angle", swerveModuleStates[0].angle.getRadians());
     SmartDashboard.putNumber("FR_Desired_Angle", swerveModuleStates[1].angle.getRadians());
     SmartDashboard.putNumber("BL_Desired_Angle", swerveModuleStates[2].angle.getRadians());
     SmartDashboard.putNumber("BR_Desired_Angle", swerveModuleStates[3].angle.getRadians());
+
 
 
   }
@@ -235,6 +264,19 @@ public class Drivetrain extends SubsystemBase {
           m_backLeft.getState(),
           m_backRight.getState()
       );
+  }
+
+  public double[] getActualModuleStates() {
+    return new double[] {
+      m_frontLeft.getState().angle.getDegrees(),
+      m_frontLeft.getState().speedMetersPerSecond,
+      m_frontRight.getState().angle.getDegrees(),
+      m_frontRight.getState().speedMetersPerSecond,
+      m_backLeft.getState().angle.getDegrees(),
+      m_backLeft.getState().speedMetersPerSecond,
+      m_backRight.getState().angle.getDegrees(),
+      m_backRight.getState().speedMetersPerSecond };
+    
   }
 
   
