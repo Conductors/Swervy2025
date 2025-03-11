@@ -47,7 +47,7 @@ public final class Constants {
     public static final double CraneMaxVelocity = Math.PI;
     public static final double WristMaxAccel = Math.PI;
     public static final double WristMaxVelocity = Math.PI;
-    public static final double KpWrist = 0.1;
+    public static final double KpWrist = 0.5;
 
     public static enum Position {
         keStow, keProcessor, keReef1, keReef2, keReef3, keReef4, keGround, keCoralStation, kNumOfPosition       //must keep this order for setpoint arrays
@@ -70,9 +70,9 @@ public final class Constants {
         };
 
         public static final double[] k_tiltAngleSetpoint = {
-            0,      //keStow  
-            0.5,         //keLoad
-            0.75       //keScore
+            0.5,      //keStow  
+            0.75,         //keLoad
+            0.33       //keScore
         };
     }
 

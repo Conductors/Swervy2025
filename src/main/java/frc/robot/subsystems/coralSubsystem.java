@@ -1,8 +1,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -37,13 +42,13 @@ public class coralSubsystem extends SubsystemBase {
     private RelativeEncoder m_ElevatorEncB;
     private double c_ElevatorBOffset = 0; //+add (Subtract) this from the Elevator B desired goal
     private double m_DesiredHeight = Constants.csConstants.k_ElevatorHeight[0];
-    private double elevatorMaxMotorSpeed = 1.0; //speed to lift the motors
+    private double elevatorMaxMotorSpeed = .5; //speed to lift the motors
     private double m_ActualHeightA = 0;
     private double m_ActualHeightB = 0;
     private double m_HeightOffset = 0;
     private double m_TiltOffset = 0;
     private static double m_HeightOffsetStep = .1;
-    private static double m_TiltOffsetStep = .1;
+    private static double m_TiltOffsetStep = .01;
 
 
     private ProfiledPIDController m_elevatorPIDA;
@@ -56,6 +61,10 @@ public class coralSubsystem extends SubsystemBase {
         elevatorMotorB = new SparkMax(elevatorMotorBPort, SparkLowLevel.MotorType.kBrushless);
 
         tiltMotor = new SparkMax(tiltMotorPort, SparkLowLevel.MotorType.kBrushless);
+        SparkMaxConfig tiltConfig = new SparkMaxConfig();
+            tiltConfig.idleMode(IdleMode.kBrake);
+        tiltMotor.configure(tiltConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         gateMotor = new Servo(gateMotorPort);
 
         m_tiltEncoder = new DutyCycleEncoder(tiltEncoderPort);
@@ -97,19 +106,19 @@ public class coralSubsystem extends SubsystemBase {
       m_ActualHeightB   = m_ElevatorEncB.getPosition();
       m_ActualTiltAngle = m_tiltEncoder.get();
 
-     /* elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
+      elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
                                         -elevatorMaxMotorSpeed,
                                         elevatorMaxMotorSpeed));    //need to check motor direction
       elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
                                         -elevatorMaxMotorSpeed,
                                         elevatorMaxMotorSpeed));
-    */                                    
+                                        
       gateMotor.set(m_desiredGatePos);
     
-      /*tiltMotor.set(MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
+      tiltMotor.set(-MathUtil.clamp(m_tiltMotorPID.calculate(m_ActualTiltAngle, m_desiredTiltAngle),
                                         -tiltMotorMaxSPeed,
                                         tiltMotorMaxSPeed));
-        */
+        
         //Publish Stuff to Dashboard
         SmartDashboard.putNumber("ElHeightDes", m_DesiredHeight);
         SmartDashboard.putNumber("ElHeightAct_A", m_ActualHeightA);

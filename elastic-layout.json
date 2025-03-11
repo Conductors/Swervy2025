@@ -224,8 +224,8 @@
               "topic": "/SmartDashboard/ClawSpeed",
               "period": 0.033,
               "data_type": "double",
-              "min_value": -1.0,
-              "max_value": 1.0,
+              "min_value": -0.5,
+              "max_value": 0.5,
               "divisions": 5,
               "inverted": false,
               "orientation": "horizontal"
@@ -384,28 +384,56 @@
             }
           },
           {
-            "title": "RightTrigger",
+            "title": "CraneMotorCurrent",
             "x": 896.0,
             "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/RightTrigger",
+              "topic": "/SmartDashboard/CraneMotorCurrent",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
             }
           },
           {
-            "title": "CraneMotorActual",
+            "title": "CraneOffset",
             "x": 896.0,
             "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/CraneMotorActual",
+              "topic": "/SmartDashboard/CraneOffset",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "WristOffset",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/WristOffset",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "WristMotorCurrent",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/WristMotorCurrent",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false

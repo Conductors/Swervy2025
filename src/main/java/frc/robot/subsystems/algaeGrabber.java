@@ -97,7 +97,8 @@ public class algaeGrabber extends SubsystemBase {
     SmartDashboard.putNumber("WristOffset", WristAngleOffset);
     SmartDashboard.putNumber("Desired Crane Angle", desiredCraneAngle);
     SmartDashboard.putNumber("Desired Wrist Angle", desiredWristAngle);
-    SmartDashboard.putNumber("CraneMotorActual", craneMotor.getOutputCurrent());
+    SmartDashboard.putNumber("CraneMotorCurrent", craneMotor.getOutputCurrent());
+    SmartDashboard.putNumber("WristMotorCurrent", wristMotor.getOutputCurrent());
     
     craneMotor.set(-m_CranePIDController.calculate(actualCraneAngle, desiredCraneAngle));    //need to check motor direction
     wristMotor.set(m_WristPIDController.calculate(actualWristAngle, desiredWristAngle));
