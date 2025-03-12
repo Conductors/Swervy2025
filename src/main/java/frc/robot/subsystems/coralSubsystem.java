@@ -42,7 +42,7 @@ public class coralSubsystem extends SubsystemBase {
     private RelativeEncoder m_ElevatorEncB;
     private double c_ElevatorBOffset = 0; //+add (Subtract) this from the Elevator B desired goal
     private double m_DesiredHeight = Constants.csConstants.k_ElevatorHeight[0];
-    private double elevatorMaxMotorSpeed = .5; //speed to lift the motors
+    private double elevatorMaxMotorSpeed = 1; //speed to lift the motors
     private double m_ActualHeightA = 0;
     private double m_ActualHeightB = 0;
     private double m_HeightOffset = 0;
@@ -128,6 +128,10 @@ public class coralSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("DesiredGatepPos", m_desiredGatePos);
         SmartDashboard.putNumber("HeightOffset", m_HeightOffset);
         SmartDashboard.putNumber("TiltOffset", m_TiltOffset);
+        SmartDashboard.putNumber("ElACurrent", elevatorMotorA.getOutputCurrent());
+        SmartDashboard.putNumber("ElBCurrent", elevatorMotorB.getOutputCurrent());
+        SmartDashboard.putNumber("TiltMotorCurrent", tiltMotor.getOutputCurrent());
+        SmartDashboard.putNumber("TiltCmd", tiltMotor.get());
     }
 
     public void setDesiredHeight(double height) {

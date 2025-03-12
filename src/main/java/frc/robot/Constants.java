@@ -61,8 +61,8 @@ public final class Constants {
         public static final double[] k_ElevatorHeight = {
             0,      //keStow   
             -10,         //keProcessor
-            -30,      //keReef1
-            -50,        //keReef2
+            -10,      //keReef1
+            -21,        //keReef2
             -70,       //keReef3
             -100,       //keReef4
             0,       //keGround
@@ -71,8 +71,8 @@ public final class Constants {
 
         public static final double[] k_tiltAngleSetpoint = {
             0.5,      //keStow  
-            0.75,         //keLoad
-            0.33       //keScore
+            0.55,         //keLoad
+            0.30       //keScore
         };
     }
 
@@ -137,12 +137,12 @@ public final class Constants {
 
       public static final class coralConstants {
 
-        public static final double kP_elevatorA = 0.005;
-        public static final double kP_elevatorB = 0.005;
-        public static final double kP_tilt      = 0.5;
+        public static final double kP_elevatorA = 0.1;
+        public static final double kP_elevatorB = 0.1;
+        public static final double kP_tilt      = 2;
         
         public static final double elevatorMaxVelocity = 1;
-        public static final double elevatorMaxAccel = 1;
+        public static final double elevatorMaxAccel = 10;
 
         public static final double tiltMaxVelocity = 1;
         public static final double tiltMaxAccel = 1;
