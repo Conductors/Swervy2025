@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
 
   
   private boolean isHighGear = false;
+  private boolean isFieldRelative = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
@@ -165,13 +166,14 @@ public class Robot extends TimedRobot {
     }
 
     /* Button Triggers */
-    //Mode Button toggles joystick vs. controller driving
     backButton.onTrue(shiftGears()); 
+    startButton.onTrue(changeIsFieldRelative());
+    
     aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
-    startButton.whileTrue(ledSystem.runPattern(LEDPattern.rainbow(255,128)));
     bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
     yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
     xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    
     lBTrigger.whileTrue(new setClawSpeed(0.5, m_AlgaeGrabber))
               .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
     rBTrigger.whileTrue(new setClawSpeed(-m_controller.getRightTriggerAxis(), m_AlgaeGrabber))
@@ -183,28 +185,34 @@ public class Robot extends TimedRobot {
 
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
-    aButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    aButton2.onTrue(new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem));
-    aButton2.onTrue(new InstantCommand(() -> isHighGear=false));
-    bButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    bButton2.onTrue(new setCoralHeight(Constants.Position.keReef3, m_CoralSubsystem));
-    bButton2.onTrue(new InstantCommand(() -> isHighGear=false));
-    yButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    yButton2.onTrue(new setCoralHeight(Constants.Position.keReef4, m_CoralSubsystem));
-    yButton2.onTrue(new InstantCommand(() -> isHighGear=false));
-    xButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem));
-    xButton2.onTrue(new setCoralHeight(Constants.Position.keReef2, m_CoralSubsystem));
-    xButton2.onTrue(new InstantCommand(() -> isHighGear=false));
-    backButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem));
-    backButton2.onTrue(new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem));
-    startButton2.onTrue(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem));
-    startButton2.onTrue(new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem));
-    startButton2.onTrue(new InstantCommand(() -> isHighGear=false));
     
-    rbButton2.whileTrue(new climbCage(true, true, m_CageClimber));
-    rbButton2.onFalse(new climbCage(false, true, m_CageClimber));
-    rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber));
-    rBTrigger2.onFalse(new climbCage(false, false, m_CageClimber));
+    aButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
+                                      new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem),
+                                      new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem)));    
+    
+    bButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false),
+                                      new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem),
+                                      new setCoralHeight(Constants.Position.keReef3, m_CoralSubsystem)));
+    
+    yButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false),
+                                      new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem),
+                                      new setCoralHeight(Constants.Position.keReef4, m_CoralSubsystem)));
+      
+    xButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
+                                      new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem),
+                                      new setCoralHeight(Constants.Position.keReef2, m_CoralSubsystem)));
+        
+    backButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem),
+                                        new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem)));
+    
+    startButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
+                                      new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem),
+                                      new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem)));
+        
+    rbButton2.whileTrue(new climbCage(true, true, m_CageClimber))
+              .onFalse(new climbCage(false, true, m_CageClimber));
+    rBTrigger2.whileTrue(new climbCage(true, false, m_CageClimber))
+              .onFalse(new climbCage(false, false, m_CageClimber));
 
     povUp.onTrue(new InstantCommand(() -> m_AlgaeGrabber.IncCraneAngle()));
     povDown.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecCraneAngle()));
@@ -256,7 +264,7 @@ public class Robot extends TimedRobot {
         * l_MaxSpeed;
     SmartDashboard.putNumber("rot", rot);
 
-    m_swerve.drive(xSpeed, ySpeed, rot, isHighGear, getPeriod());    
+    m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod());    
 
   }
 
@@ -268,6 +276,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller Right X", m_controller.getRightX());
     SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getRotation2d().getDegrees());
     SmartDashboard.putBoolean("High Gear Enabled", isHighGear);
+    SmartDashboard.putBoolean("isFieldRelative", isFieldRelative);
 
     SmartDashboard.putNumber("Crane Angle", m_AlgaeGrabber.getActualCraneAngle());
     SmartDashboard.putNumber("Wrist Angle", m_AlgaeGrabber.getActualWristAngle());
@@ -466,6 +475,12 @@ public Command takeAlgae(Position algaePos) {
   public Command shiftGears() {
     return Commands.sequence(
         new InstantCommand(() -> isHighGear=!isHighGear)
+    );
+  }
+
+  public Command changeIsFieldRelative() {
+    return Commands.sequence(
+        new InstantCommand(() -> isFieldRelative=!isFieldRelative)
     );
   }
 

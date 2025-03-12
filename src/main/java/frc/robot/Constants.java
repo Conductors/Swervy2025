@@ -93,7 +93,8 @@ public final class Constants {
             5,      //keReef2
             4,     //keReef3
             4,     //keReef4
-            6.1      //keGround
+            6.1,     //keGround
+            6.1      //keCoralStation
         };
         public static final double[] k_CraneAngleSetpoint = {
             3.1,      //keStow
@@ -102,7 +103,8 @@ public final class Constants {
             1,      //keReef2
             0.5,      //keReef3
             0.5,     //keReef4
-            3.1      //keGround
+            3.1,      //keGround
+            3.1      //keCoralStation
         };  
 
         public static final double k_clawInSpeed = .5;
