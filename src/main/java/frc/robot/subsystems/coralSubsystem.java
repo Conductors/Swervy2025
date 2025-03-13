@@ -129,7 +129,9 @@ public class coralSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("HeightOffset", m_HeightOffset);
         SmartDashboard.putNumber("TiltOffset", m_TiltOffset);
         SmartDashboard.putNumber("ElACurrent", elevatorMotorA.getOutputCurrent());
+        SmartDashboard.putNumber("ElACmd", elevatorMotorA.get());
         SmartDashboard.putNumber("ElBCurrent", elevatorMotorB.getOutputCurrent());
+        SmartDashboard.putNumber("ElBCmd", elevatorMotorB.get());
         SmartDashboard.putNumber("TiltMotorCurrent", tiltMotor.getOutputCurrent());
         SmartDashboard.putNumber("TiltCmd", tiltMotor.get());
     }

@@ -45,9 +45,9 @@ public class cageClimber extends SubsystemBase {
   public void climb(boolean climbing, boolean isUp) {
     if(climbing) {
       if(isUp)
-      { winchSpeed = -5; } 
+      { winchSpeed = -0.5; } 
       else 
-      { winchSpeed = .5; }
+      { winchSpeed = 0.5; }
     }
     else 
     {

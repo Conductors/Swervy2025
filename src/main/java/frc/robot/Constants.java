@@ -45,8 +45,8 @@ public final class Constants {
     public static final double KpCrane = 0.5;
     public static final double CraneMaxAccel = Math.PI;
     public static final double CraneMaxVelocity = Math.PI;
-    public static final double WristMaxAccel = Math.PI;
-    public static final double WristMaxVelocity = Math.PI;
+    public static final double WristMaxAccel = 20;
+    public static final double WristMaxVelocity = 5;
     public static final double KpWrist = 0.5;
 
     public static enum Position {
@@ -141,8 +141,8 @@ public final class Constants {
         public static final double kP_elevatorB = 0.1;
         public static final double kP_tilt      = 2;
         
-        public static final double elevatorMaxVelocity = 1;
-        public static final double elevatorMaxAccel = 10;
+        public static final double elevatorMaxVelocity = 100;
+        public static final double elevatorMaxAccel = 1000;
 
         public static final double tiltMaxVelocity = 1;
         public static final double tiltMaxAccel = 1;
