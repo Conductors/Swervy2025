@@ -217,7 +217,7 @@ public class Robot extends TimedRobot {
     povUp.onTrue(new InstantCommand(() -> m_AlgaeGrabber.IncCraneAngle()));
     povDown.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecCraneAngle()));
     povRight.onTrue(new InstantCommand(() -> m_AlgaeGrabber.IncWristAngle()));
-    povLeft.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecCraneAngle()));
+    povLeft.onTrue(new InstantCommand(() -> m_AlgaeGrabber.DecWristAngle()));
     
     povUp2.onTrue(new InstantCommand(() -> m_CoralSubsystem.incHeightOffset()));
     povDown2.onTrue(new InstantCommand(() -> m_CoralSubsystem.decHeightOffset()));

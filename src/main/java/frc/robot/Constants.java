@@ -84,17 +84,17 @@ public final class Constants {
         public static final int k_CraneEncPort = 6;
         public static final int k_WristEncPort = 7;
         public static final double k_CraneEncOffset = 0;
-        public static final double k_WristEncOffset = 0;
+        public static final double k_WristEncOffset = 0.5;
 
         public static final double[] k_WristAngleSetpoint = {
-            6.1,      //keStow
-            5.5,      //keProcessor
-            5,      //keReef1
-            5,      //keReef2
-            4,     //keReef3
-            4,     //keReef4
-            6.1,     //keGround
-            6.1      //keCoralStation
+            3.1,      //keStow
+            2.5,      //keProcessor
+            2,      //keReef1
+            2,      //keReef2
+            1,     //keReef3
+            1,     //keReef4
+            2.1,     //keGround
+            3.1      //keCoralStation
         };
         public static final double[] k_CraneAngleSetpoint = {
             3.1,      //keStow
