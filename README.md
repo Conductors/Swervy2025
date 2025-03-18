@@ -30,6 +30,11 @@ Conductors 4580 Swerve Bot for 2025
 ###### Old Computer
 - Set up Github
 
+
+##### RADIO Stuff
+4580BigToe
+
+
 Level2:  Tilt:  .26;  Height:  -21
 Level1:  
 

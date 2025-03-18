@@ -186,27 +186,22 @@ public class Robot extends TimedRobot {
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
     
-    aButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
-                                      new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem),
+    aButton2.onTrue(Commands.sequence(new setCoralHeight(Constants.Position.keReef1, m_CoralSubsystem),
                                       new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem)));    
     
-    bButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false),
-                                      new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem),
+    bButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem),
                                       new setCoralHeight(Constants.Position.keReef3, m_CoralSubsystem)));
     
-    yButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false),
-                                      new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem),
+    yButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem),
                                       new setCoralHeight(Constants.Position.keReef4, m_CoralSubsystem)));
       
-    xButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
-                                      new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem),
+    xButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keScore, m_CoralSubsystem),
                                       new setCoralHeight(Constants.Position.keReef2, m_CoralSubsystem)));
         
     backButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keStow, m_CoralSubsystem),
                                         new setCoralHeight(Constants.Position.keStow, m_CoralSubsystem)));
     
-    startButton2.onTrue(Commands.sequence(new InstantCommand(() -> isHighGear=false), 
-                                      new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem),
+    startButton2.onTrue(Commands.sequence(new setCoralTiltAngle(Constants.tiltPosition.keLoad, m_CoralSubsystem),
                                       new setCoralHeight(Constants.Position.keCoralStation, m_CoralSubsystem)));
         
     rbButton2.whileTrue(new climbCage(true, true, m_CageClimber))
@@ -328,19 +323,22 @@ public class Robot extends TimedRobot {
           new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
           new InstantCommand(() -> System.out.println("Done !")));
           break;
-          case "ScoreOneCoral":
+        case "ScoreOneCoral":
           temp = Commands.sequence(
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
             new InstantCommand(() -> System.out.println("Drive Forward")),
             driveStraight(1.25),
-            new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
-            setCoralHeight(Constants.Position.keReef1),
-            new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
-            scoreCoralReef1(),
+            //new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
+            //setCoralHeight(Constants.Position.keReef2),
+            //new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
+            scoreCoralReef2(),
             new InstantCommand(() -> System.out.println("Wait")),
-            new WaitCommand(3.5),
+            new WaitCommand(1),
+            new InstantCommand(() ->  new setGateState(true, m_CoralSubsystem)),
+            new WaitCommand(2),
             new InstantCommand(() -> System.out.println("Set Coral Height - Stow")),
             stowCoral(),
+            new InstantCommand(() ->  new setGateState(false, m_CoralSubsystem)),
             new InstantCommand(() -> System.out.println("Stop & wait  .5 seconds")),
             new InstantCommand(() -> m_swerve.drive(0,0,0,false, getPeriod())).repeatedly().withTimeout(.5),
             new InstantCommand(() -> System.out.println("Done !")));
@@ -423,6 +421,10 @@ public class Robot extends TimedRobot {
 
   public Command scoreCoralReef1() {
     return new setCoralState(Constants.Position.keReef1, Constants.tiltPosition.keScore, m_CoralSubsystem);
+  }
+
+  public Command scoreCoralReef2() {
+    return new setCoralState(Constants.Position.keReef2, Constants.tiltPosition.keScore, m_CoralSubsystem);
   }
 
   public Command stowCoral() {

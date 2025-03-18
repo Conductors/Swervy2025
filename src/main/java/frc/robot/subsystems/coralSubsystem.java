@@ -47,8 +47,8 @@ public class coralSubsystem extends SubsystemBase {
     private double m_ActualHeightB = 0;
     private double m_HeightOffset = 0;
     private double m_TiltOffset = 0;
-    private static double m_HeightOffsetStep = .1;
-    private static double m_TiltOffsetStep = .01;
+    private static double m_HeightOffsetStep = 1;
+    private static double m_TiltOffsetStep = .05;
 
 
     private ProfiledPIDController m_elevatorPIDA;

@@ -7,8 +7,8 @@ public final class Constants {
     public static final double kDefaultPeriod = 0.02; //50Hz
 
     //Drivetrain (whole robot) constants
-    public static final double kMaxRobotSpeed = 3; // meters per second
-    public static final double kMaxRobotSpeedLowGear = 1;
+    public static final double kMaxRobotSpeed = 2; // meters per second
+    public static final double kMaxRobotSpeedLowGear = .75;
     public static final double kMaxRobotAngularSpeed = Math.PI; // 1/2 rotation per second = Pi
     public static final double kWheelRadius = 0.0508;   //4" mk4 wheels
     public static final double kGearRatio = 8.1;  //actual 8.1
@@ -61,10 +61,10 @@ public final class Constants {
         public static final double[] k_ElevatorHeight = {
             0,      //keStow   
             -10,         //keProcessor
-            -10,      //keReef1
-            -21,        //keReef2
-            -70,       //keReef3
-            -100,       //keReef4
+            -5,      //keReef1
+            -40,        //keReef2
+            -119,       //keReef3
+            -286.7,       //keReef4
             0,       //keGround
             -10,       //Coral Station
         };
@@ -87,24 +87,24 @@ public final class Constants {
         public static final double k_WristEncOffset = 0.5;
 
         public static final double[] k_WristAngleSetpoint = {
-            3.1,      //keStow
-            2.5,      //keProcessor
-            2,      //keReef1
-            2,      //keReef2
-            1,     //keReef3
-            1,     //keReef4
-            2.1,     //keGround
-            3.1      //keCoralStation
+            2.75,      //keStow
+            2.75,      //keProcessor
+            2.13,      //keReef1
+            2.13,      //keReef2
+            1.6,     //keReef3
+            1.6,     //keReef4
+            2.75,     //keGround
+            2.75      //keCoralStation
         };
         public static final double[] k_CraneAngleSetpoint = {
-            3.1,      //keStow
-            2,      //keProcessor
-            1,      //keReef1
-            1,      //keReef2
-            0.5,      //keReef3
-            0.5,     //keReef4
-            3.1,      //keGround
-            3.1      //keCoralStation
+            2.84,      //keStow
+            2.56,      //keProcessor
+            1.65,      //keReef1
+            1.65,      //keReef2
+            0.67,      //keReef3
+            0.67,     //keReef4
+            2.84,      //keGround
+            2.84      //keCoralStation
         };  
 
         public static final double k_clawInSpeed = .5;
@@ -139,7 +139,7 @@ public final class Constants {
 
         public static final double kP_elevatorA = 0.1;
         public static final double kP_elevatorB = 0.1;
-        public static final double kP_tilt      = 2;
+        public static final double kP_tilt      = 2.5;
         
         public static final double elevatorMaxVelocity = 100;
         public static final double elevatorMaxAccel = 1000;
