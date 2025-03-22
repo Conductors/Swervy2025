@@ -41,6 +41,7 @@ public class coralSubsystem extends SubsystemBase {
     private RelativeEncoder m_ElevatorEncA;
     private RelativeEncoder m_ElevatorEncB;
     private double c_ElevatorBOffset = 0; //+add (Subtract) this from the Elevator B desired goal
+    private double c_ElevatorBScale  = 1.0; //scale the Elevator B desired goal by this amount
     private double m_DesiredHeight = Constants.csConstants.k_ElevatorHeight[0];
     private double elevatorMaxMotorSpeed = 1; //speed to lift the motors
     private double m_ActualHeightA = 0;
@@ -109,7 +110,7 @@ public class coralSubsystem extends SubsystemBase {
       elevatorMotorA.set(MathUtil.clamp(m_elevatorPIDA.calculate(m_ActualHeightA, m_DesiredHeight),
                                         -elevatorMaxMotorSpeed,
                                         elevatorMaxMotorSpeed));    //need to check motor direction
-      elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, m_DesiredHeight+c_ElevatorBOffset),
+      elevatorMotorB.set(MathUtil.clamp(m_elevatorPIDB.calculate(m_ActualHeightB, (m_DesiredHeight+c_ElevatorBOffset)*c_ElevatorBScale),
                                         -elevatorMaxMotorSpeed,
                                         elevatorMaxMotorSpeed));
                                         

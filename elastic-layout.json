@@ -110,7 +110,7 @@
               "topic": "/SmartDashboard/ElHeightAct_A",
               "period": 0.06,
               "data_type": "double",
-              "min_value": -150.0,
+              "min_value": -300.0,
               "max_value": 0.0,
               "divisions": 5,
               "inverted": true,
@@ -128,7 +128,7 @@
               "topic": "/SmartDashboard/ElHeightAct_B",
               "period": 0.06,
               "data_type": "double",
-              "min_value": -150.0,
+              "min_value": -300.0,
               "max_value": 0.0,
               "divisions": 5,
               "inverted": true,
@@ -146,7 +146,7 @@
               "topic": "/SmartDashboard/ElHeightDes",
               "period": 0.06,
               "data_type": "double",
-              "min_value": -150.0,
+              "min_value": -300.0,
               "max_value": 0.0,
               "divisions": 5,
               "inverted": true,
@@ -185,7 +185,7 @@
               "start_angle": -140.0,
               "end_angle": 140.0,
               "min_value": 0.0,
-              "max_value": 10.0,
+              "max_value": 6.0,
               "number_of_labels": 8,
               "wrap_value": false,
               "show_pointer": true,
@@ -206,7 +206,7 @@
               "start_angle": -140.0,
               "end_angle": 140.0,
               "min_value": 0.0,
-              "max_value": 10.0,
+              "max_value": 6.0,
               "number_of_labels": 8,
               "wrap_value": false,
               "show_pointer": true,
@@ -234,7 +234,7 @@
           {
             "title": "High Gear Enabled",
             "x": 640.0,
-            "y": 512.0,
+            "y": 640.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -322,7 +322,7 @@
               "start_angle": -140.0,
               "end_angle": 140.0,
               "min_value": 0.0,
-              "max_value": 10.0,
+              "max_value": 6.0,
               "number_of_labels": 8,
               "wrap_value": false,
               "show_pointer": true,
@@ -343,7 +343,7 @@
               "start_angle": -140.0,
               "end_angle": 140.0,
               "min_value": 0.0,
-              "max_value": 10.0,
+              "max_value": 6.0,
               "number_of_labels": 8,
               "wrap_value": false,
               "show_pointer": true,
@@ -510,6 +510,23 @@
             "properties": {
               "topic": "/CameraPublisher/USB Camera 0",
               "period": 0.06
+            }
+          },
+          {
+            "title": "isAlgaeRelative",
+            "x": 640.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/isAlgaeRelative",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
             }
           }
         ]
@@ -923,7 +940,7 @@
           },
           {
             "title": "WristMotorCurrent",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 256.0,
             "width": 256.0,
             "height": 256.0,
@@ -941,7 +958,7 @@
           },
           {
             "title": "WristCmd",
-            "x": 768.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -960,7 +977,7 @@
           {
             "title": "WristAngle",
             "x": 1024.0,
-            "y": 0.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Graph",
@@ -977,7 +994,7 @@
           },
           {
             "title": "Desired Wrist Angle",
-            "x": 1280.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -991,6 +1008,118 @@
               "max_value": 8.0,
               "color": 4278238420,
               "line_width": 2.0
+            }
+          },
+          {
+            "title": "BL abs Pos",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BL abs Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "BL adj Pos",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BL adj Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "BR abs Pos",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BR abs Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "BR adj Pos",
+            "x": 896.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/BR adj Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FL abs Pos",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/FL abs Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FL adj Pos",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/FL adj Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FR abs Pos",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/FR abs Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FR adj Pos",
+            "x": 896.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/FR adj Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
             }
           }
         ]
