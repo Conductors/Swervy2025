@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
   
   private boolean isHighGear = false;
   private boolean isFieldRelative = false;
+  private boolean isAlgaeRelative = false;
 
   private final Drivetrain m_swerve = new Drivetrain();
   private final Field2d m_field = new Field2d();
@@ -186,8 +187,9 @@ public Robot() {
               .onFalse(new setClawSpeed(0, m_AlgaeGrabber));    //check - out is negative
     lbButton.whileTrue(new setClawSpeed(0.5, m_AlgaeGrabber))
               .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
-    rbButton.whileTrue(new setClawSpeed(-0.5, m_AlgaeGrabber))
-              .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
+    //rbButton.whileTrue(new setClawSpeed(-0.5, m_AlgaeGrabber))
+    //          .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
+    rbButton.onTrue(changeIsAlgaeRelative());
 
     lbButton2.onTrue(new setGateState(true, m_CoralSubsystem));
     lbButton2.onFalse(new setGateState(false, m_CoralSubsystem));
@@ -250,22 +252,45 @@ public Robot() {
     //Set the max speed constant to use high (regular) or low speed based on isHighGear
     double l_MaxSpeed = isHighGear?Constants.kMaxRobotSpeed:Constants.kMaxRobotSpeedLowGear;
     
-    final var xSpeed =
-      -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
-      * l_MaxSpeed;
-    SmartDashboard.putNumber("xSpeed", xSpeed);
-
-    final var ySpeed =
-      -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+    if(!isAlgaeRelative)
+    {
+      final var xSpeed =
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
         * l_MaxSpeed;
-    SmartDashboard.putNumber("ySpeed", ySpeed);
+      SmartDashboard.putNumber("xSpeed", xSpeed);
 
-    final var rot =
-      -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
-        * l_MaxSpeed;
-    SmartDashboard.putNumber("rot", rot);
+      final var ySpeed =
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+          * l_MaxSpeed;
+      SmartDashboard.putNumber("ySpeed", ySpeed);
 
-    m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod());    
+      final var rot =
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+          * l_MaxSpeed;
+      SmartDashboard.putNumber("rot", rot);
+
+      m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod());    
+    } else {  //This IS algae relative.  
+      {
+        final var xSpeed =
+          -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+          * l_MaxSpeed;
+        SmartDashboard.putNumber("xSpeed", xSpeed);
+  
+        final var ySpeed =
+          -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.1))
+            * l_MaxSpeed;
+        SmartDashboard.putNumber("ySpeed", ySpeed);
+  
+        final var rot =
+          -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
+            * l_MaxSpeed;
+        SmartDashboard.putNumber("rot", rot);
+  
+        m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod()); 
+    }
+
+  }
 
   }
 
@@ -278,6 +303,7 @@ public Robot() {
     SmartDashboard.putNumber("Gyro Angle", m_swerve.m_gyro.getRotation2d().getDegrees());
     SmartDashboard.putBoolean("High Gear Enabled", isHighGear);
     SmartDashboard.putBoolean("isFieldRelative", isFieldRelative);
+    SmartDashboard.putBoolean("isAlgaeRelative", isAlgaeRelative);
 
     SmartDashboard.putNumber("Crane Angle", m_AlgaeGrabber.getActualCraneAngle());
     SmartDashboard.putNumber("Wrist Angle", m_AlgaeGrabber.getActualWristAngle());
@@ -490,6 +516,12 @@ public Command takeAlgae(Position algaePos) {
   public Command changeIsFieldRelative() {
     return Commands.sequence(
         new InstantCommand(() -> isFieldRelative=!isFieldRelative)
+    );
+  }
+
+  public Command changeIsAlgaeRelative() {
+    return Commands.sequence(
+        new InstantCommand(() -> isAlgaeRelative=!isAlgaeRelative)
     );
   }
 

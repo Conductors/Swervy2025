@@ -9,7 +9,7 @@ public final class Constants {
     //Drivetrain (whole robot) constants
     public static final double kMaxRobotSpeed = 2; // meters per second
     public static final double kMaxRobotSpeedLowGear = .75;
-    public static final double kMaxRobotAngularSpeed = Math.PI; // 1/2 rotation per second = Pi
+    public static final double kMaxRobotAngularSpeed = 2*Math.PI; // 1/2 rotation per second = Pi
     public static final double kWheelRadius = 0.0508;   //4" mk4 wheels
     public static final double kGearRatio = 8.1;  //actual 8.1
     public static final int kEncoderResolution = 42;
