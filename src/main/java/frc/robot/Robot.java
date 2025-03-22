@@ -122,9 +122,9 @@ public Robot() {
     m_AutoChooser.addOption("Auto 3", Constants.AutoConstants.kAutoProgram[3]);
     m_AutoChooser.addOption("BackUp", Constants.AutoConstants.kAutoProgram[4]);
     m_AutoChooser.addOption("ScoreOneCoral", Constants.AutoConstants.kAutoProgram[5]);
+    m_AutoChooser.addOption("ScoreCoralTake1Algae", Constants.AutoConstants.kAutoProgram[6]);
+    m_AutoChooser.addOption("diagScoreReef", Constants.AutoConstants.kAutoProgram[7]);
     m_AutoChooser.addOption("ScoreCoralClearAlgae", Constants.AutoConstants.kAutoProgram[6]);
-    m_AutoChooser.addOption("ScoreCoralTake1Algae", Constants.AutoConstants.kAutoProgram[7]);
-
     SmartDashboard.putData("Auto Choices", m_AutoChooser);  //Sync the Autochooser
 
   
@@ -273,7 +273,7 @@ public Robot() {
     } else {  //This IS algae relative.  
       {
         final var xSpeed =
-          -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
+          m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.1))
           * l_MaxSpeed;
         SmartDashboard.putNumber("xSpeed", xSpeed);
   
