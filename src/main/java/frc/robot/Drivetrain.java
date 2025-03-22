@@ -40,13 +40,13 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backRightLocation = new Translation2d(-0.303, -0.303);
 
   private final SwerveModule m_frontLeft = new SwerveModule(11, 10,  
-                                                    0, 0.951);          //0.667
+                                                    0, 0.958);         //0.951 //0.667
   private final SwerveModule m_frontRight = new SwerveModule(15, 14, 
-                                                    2, 0.264);          //0.825
+                                                    2, 0.368);         //0.264 //0.825
   private final SwerveModule m_backLeft = new SwerveModule(13, 12,  
-                                                    1, 0.664);          //0.403
+                                                    1, 0.745);      //0.664    //0.403
   private final SwerveModule m_backRight = new SwerveModule(17, 16, 
-                                                    3, 0.784);          //0.331
+                                                    3, 0.165);      //0.379    //0.331
 
   private RobotConfig mRobotconfig;
 

@@ -64,7 +64,7 @@ public final class Constants {
             -5,      //keReef1
             -40,        //keReef2
             -119,       //keReef3
-            -286.7,       //keReef4
+            -271.7,       //keReef4
             0,       //keGround
             -10,       //Coral Station
         };
@@ -88,20 +88,20 @@ public final class Constants {
 
         public static final double[] k_WristAngleSetpoint = {
             2.75,      //keStow
-            2.75,      //keProcessor
+            3.05,      //keProcessor
             2.13,      //keReef1
-            2.13,      //keReef2
-            1.6,     //keReef3
-            1.6,     //keReef4
+            2.43,      //keReef2
+            1.9,        //keReef3
+            1.6,        //keReef4
             2.75,     //keGround
             2.75      //keCoralStation
         };
         public static final double[] k_CraneAngleSetpoint = {
             2.84,      //keStow
-            2.56,      //keProcessor
+            2.16,      //keProcessor
             1.65,      //keReef1
-            1.65,      //keReef2
-            0.67,      //keReef3
+            1.25,      //keReef2
+            0.57,      //keReef3
             0.67,     //keReef4
             2.84,      //keGround
             2.84      //keCoralStation
@@ -132,7 +132,7 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
 
-        public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2", "Auto 3", "BackUp", "Score1Coral", "ScoreCoralTake1Algae", "diagScoreReef", "ScoreCoralClearAlgae"};
+        public static final String[] kAutoProgram = {"None", "Auto 1", "Auto 2", "Auto 3", "BackUp", "ScoreOneCoral", "ScoreCoralTake1Algae", "diagScoreReef", "ScoreCoralClearAlgae"};
       }
 
       public static final class coralConstants {

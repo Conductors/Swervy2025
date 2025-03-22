@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -107,6 +108,11 @@ public class Robot extends TimedRobot {
 
   private final LEDSubsystem ledSystem = new LEDSubsystem();
 
+
+public Robot() {
+  CameraServer.startAutomaticCapture();
+}
+
   @Override
   public void robotInit() {
     m_AutoChooser.setDefaultOption("None", Constants.AutoConstants.kAutoProgram[0]);
@@ -171,8 +177,8 @@ public class Robot extends TimedRobot {
     
     aButton.onTrue(new setCranePosition(Constants.Position.keStow, m_AlgaeGrabber));
     bButton.onTrue(new setCranePosition(Constants.Position.keProcessor, m_AlgaeGrabber));
-    yButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
-    xButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    yButton.onTrue(new setCranePosition(Constants.Position.keReef3, m_AlgaeGrabber));
+    xButton.onTrue(new setCranePosition(Constants.Position.keReef2, m_AlgaeGrabber));
     
     lBTrigger.whileTrue(new setClawSpeed(0.5, m_AlgaeGrabber))
               .onFalse(new setClawSpeed(0, m_AlgaeGrabber));
@@ -327,13 +333,14 @@ public class Robot extends TimedRobot {
           temp = Commands.sequence(
             new InstantCommand(() -> m_swerve.resetOdometry(new Pose2d(0,0, new Rotation2d(0)))),
             new InstantCommand(() -> System.out.println("Drive Forward")),
-            driveStraight(1.25),
+            driveStraight(1.5),
             //new InstantCommand(() -> System.out.println("Set Coral Height - Reef 1")),
             //setCoralHeight(Constants.Position.keReef2),
             //new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
+            new WaitCommand(1),
             scoreCoralReef2(),
             new InstantCommand(() -> System.out.println("Wait")),
-            new WaitCommand(1),
+            new WaitCommand(2),
             new InstantCommand(() ->  new setGateState(true, m_CoralSubsystem)),
             new WaitCommand(2),
             new InstantCommand(() -> System.out.println("Set Coral Height - Stow")),
