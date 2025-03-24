@@ -251,6 +251,7 @@ public Robot() {
  
     //Set the max speed constant to use high (regular) or low speed based on isHighGear
     double l_MaxSpeed = isHighGear?Constants.kMaxRobotSpeed:Constants.kMaxRobotSpeedLowGear;
+    double l_MaxAngSpeed = isHighGear?Constants.kMaxRobotAngularSpeed:Constants.kMaxRobotAngularSpeedLowGear;
     
     if(!isAlgaeRelative)
     {
@@ -266,7 +267,7 @@ public Robot() {
 
       final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
-          * l_MaxSpeed;
+          * l_MaxAngSpeed;
       SmartDashboard.putNumber("rot", rot);
 
       m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod());    
@@ -284,7 +285,7 @@ public Robot() {
   
         final var rot =
           -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.1))
-            * l_MaxSpeed;
+            * l_MaxAngSpeed;
         SmartDashboard.putNumber("rot", rot);
   
         m_swerve.drive(xSpeed, ySpeed, rot, isFieldRelative, getPeriod()); 
@@ -365,6 +366,7 @@ public Robot() {
             //new InstantCommand(() -> System.out.println("Set Coral Tilt - Score")),
             new WaitCommand(1),
             scoreCoralReef2(),
+            //scoreCoralReef4(),
             new InstantCommand(() -> System.out.println("Wait")),
             new WaitCommand(2),
             new InstantCommand(() ->  new setGateState(true, m_CoralSubsystem)),
@@ -458,6 +460,10 @@ public Robot() {
 
   public Command scoreCoralReef2() {
     return new setCoralState(Constants.Position.keReef2, Constants.tiltPosition.keScore, m_CoralSubsystem);
+  }
+
+  public Command scoreCoralReef4() {
+    return new setCoralState(Constants.Position.keReef4, Constants.tiltPosition.keScore, m_CoralSubsystem);
   }
 
   public Command stowCoral() {
